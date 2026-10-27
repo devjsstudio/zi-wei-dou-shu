@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocale } from './LocaleProvider';
 
 interface ScrollIntroProps {
   onComplete: () => void;
@@ -9,8 +10,12 @@ interface ScrollIntroProps {
 }
 
 const BEIDOU = ['天枢', '天璇', '天玑', '天权', '玉衡', '开阳', '摇光'];
+const BEIDOU_VI = ['Thiên Xu', 'Thiên Toàn', 'Thiên Cơ', 'Thiên Quyền', 'Ngọc Hành', 'Khai Dương', 'Dao Quang'];
 
-export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: ScrollIntroProps) {
+export default function ScrollIntro({ onComplete, skipLabel }: ScrollIntroProps) {
+  const { tr, locale } = useLocale();
+  const vi = locale === 'vi';
+  const skip = skipLabel ?? tr('跳 过', 'Bỏ qua');
   // visible：整个 intro 是否在显示
   // unrolled：卷轴是否已展开（控制内容浮现）
   const [visible, setVisible] = useState(true);
@@ -132,13 +137,13 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
                 <div style={{
                   fontSize: 'clamp(10px, 1.1vw, 12px)',
                   color: '#8b5d18',
-                  letterSpacing: '0.45em',
+                  letterSpacing: vi ? '0.12em' : '0.45em',
                   marginBottom: 'clamp(20px, 3vh, 36px)',
                   fontFamily: '"STKaiti", "Kaiti SC", serif',
                   whiteSpace: 'nowrap',
                   opacity: 0.85,
                 }}>
-                  {BEIDOU.join(' · ')}
+                  {(vi ? BEIDOU_VI : BEIDOU).join(' · ')}
                 </div>
 
                 {/* 烫金细线 */}
@@ -150,39 +155,39 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
 
                 {/* 大字「紫微命盘」 */}
                 <h1 style={{
-                  fontSize: 'clamp(48px, 8vw, 110px)',
+                  fontSize: vi ? 'clamp(36px, 6.5vw, 92px)' : 'clamp(48px, 8vw, 110px)',
                   fontWeight: 700,
                   color: '#1a1208',
-                  letterSpacing: 'clamp(0.18em, 0.25vw, 0.3em)',
+                  letterSpacing: vi ? '0.04em' : 'clamp(0.18em, 0.25vw, 0.3em)',
                   lineHeight: 1.05,
                   margin: 0,
                   textShadow: '0 1px 0 rgba(255,250,235,0.3)',
                   whiteSpace: 'nowrap',
                 }}>
-                  紫微命盘
+                  {tr('紫微命盘', 'Lá Số Tử Vi')}
                 </h1>
 
                 {/* 副标 楷体 */}
                 <div style={{
                   fontSize: 'clamp(13px, 1.5vw, 18px)',
                   color: '#6b4818',
-                  letterSpacing: '0.4em',
+                  letterSpacing: vi ? '0.12em' : '0.4em',
                   fontFamily: '"STKaiti", "Kaiti SC", serif',
                   marginTop: 'clamp(16px, 2.5vh, 24px)',
                   marginBottom: '6px',
                   whiteSpace: 'nowrap',
                 }}>
-                  观 天 之 象 · 察 人 之 命
+                  {tr('观 天 之 象 · 察 人 之 命', 'Quan thiên chi tượng · Sát nhân chi mệnh')}
                 </div>
                 <div style={{
                   fontSize: 'clamp(11px, 1.2vw, 14px)',
                   color: '#8b6410',
-                  letterSpacing: '0.3em',
+                  letterSpacing: vi ? '0.1em' : '0.3em',
                   fontFamily: '"STSong", serif',
                   whiteSpace: 'nowrap',
                   opacity: 0.85,
                 }}>
-                  倪海厦《天纪》正宗体系
+                  {tr('倪海厦《天纪》正宗体系', 'Hệ chính tông «Thiên Kỷ» của Nghê Hải Hạ')}
                 </div>
 
                 {/* 朱砂方印 */}
@@ -310,7 +315,7 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
               e.currentTarget.style.color = 'rgba(232,220,196,0.55)';
             }}
           >
-            {skipLabel} →
+            {skip} →
           </button>
         </motion.div>
       )}

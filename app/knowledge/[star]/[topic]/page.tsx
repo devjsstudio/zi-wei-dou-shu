@@ -25,6 +25,9 @@ import {
   SLUG_TO_STAR,
 } from '@/lib/seo/knowledge';
 import { SITE_URL } from '@/lib/site';
+import { L, LocaleSwitch } from '@/components/LocaleProvider';
+import { starVi, palaceVi } from '@/lib/i18n/terms-vi';
+import { TOPIC_LABEL_VI, STAR_BRIEF_SEO_VI } from '@/lib/i18n/library-vi';
 
 // 允许动态参数：如果某个 star/topic 组合不在 generateStaticParams 列表中
 // 也允许运行时按需渲染，避免中文 URL 编码问题导致 404
@@ -74,6 +77,11 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
   const data = getKnowledge(star, topic as TopicKey);
   if (!data.exists) notFound();
 
+  // 越南语显示用
+  const starV = starVi(star);
+  const palaceV = palaceVi(data.palaceName);
+  const topicV = TOPIC_LABEL_VI[topic as TopicKey];
+
   // 同主星其他 topic
   const otherTopicsForStar = ALL_TOPICS.filter(t => t !== topic && getKnowledge(star, t).exists);
   // 同 topic 其他主星
@@ -106,46 +114,49 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
       <div className="px-6 py-4 flex items-center justify-between"
         style={{ borderBottom: '1px solid rgba(184,146,42,0.15)', background: 'var(--bg-page)' }}>
         <Link href="/" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.3em', textDecoration: 'none' }}>
-          ← 首页
+          ← <L zh="首页" vi="Trang chủ" />
         </Link>
         <div style={{ fontSize: '12px', color: 'var(--tx-3)', letterSpacing: '0.2em' }}>
-          倪师方法论 · 知识库
+          <L zh="倪师方法论 · 知识库" vi="Phương pháp luận thầy Nghê · Kho kiến thức" />
         </div>
-        <Link href="/chart" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em', textDecoration: 'none' }}>
-          起盘 →
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <LocaleSwitch />
+          <Link href="/chart" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em', textDecoration: 'none' }}>
+            <L zh="起盘" vi="Lập lá số" /> →
+          </Link>
+        </div>
       </div>
 
       <article className="max-w-3xl mx-auto px-6 py-12">
         {/* 面包屑 */}
         <nav style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.1em', marginBottom: '16px' }}>
-          <Link href="/" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}>首页</Link>
+          <Link href="/" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}><L zh="首页" vi="Trang chủ" /></Link>
           <span style={{ margin: '0 8px' }}>/</span>
-          <Link href="/knowledge" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}>知识库</Link>
+          <Link href="/knowledge" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}><L zh="知识库" vi="Kho kiến thức" /></Link>
           <span style={{ margin: '0 8px' }}>/</span>
-          <span>{star}</span>
+          <span><L zh={star} vi={starV} /></span>
           <span style={{ margin: '0 8px' }}>·</span>
-          <span style={{ color: 'var(--ac)' }}>{data.palaceName}宫</span>
+          <span style={{ color: 'var(--ac)' }}><L zh={`${data.palaceName}宫`} vi={`Cung ${palaceV}`} /></span>
         </nav>
 
         {/* 标题区 */}
         <header style={{ marginBottom: '36px' }}>
           <div style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.25em', marginBottom: '8px' }}>
-            {data.topicLabel} · 倪海厦体系详解
+            <L zh={`${data.topicLabel} · 倪海厦体系详解`} vi={`${topicV} · giải chi tiết theo hệ Nghê Hải Hạ`} />
           </div>
           <h1 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: 'var(--tx-0)', letterSpacing: '0.1em', lineHeight: 1.2 }}>
-            {star}入{data.palaceName}宫
+            <L zh={`${star}入${data.palaceName}宫`} vi={`${starV} nhập cung ${palaceV}`} />
           </h1>
           {STAR_BRIEF_SEO[star] && (
             <p style={{ fontSize: '13px', color: 'var(--tx-2)', marginTop: '14px', lineHeight: 1.8 }}>
-              {STAR_BRIEF_SEO[star]}
+              <L zh={STAR_BRIEF_SEO[star]} vi={STAR_BRIEF_SEO_VI[star]} />
             </p>
           )}
         </header>
 
         {/* 内容 4 段 */}
         {data.parsed.dingdiao && (
-          <Section title="一句话定调" gradient>
+          <Section title={<L zh="一句话定调" vi="Định điệu một câu" />} gradient>
             <p style={{ fontSize: '17px', color: 'var(--tx-0)', lineHeight: 1.9, fontWeight: 500, letterSpacing: '0.04em' }}>
               {data.parsed.dingdiao}
             </p>
@@ -153,7 +164,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
         )}
 
         {data.parsed.lundian && (
-          <Section title="核心论断">
+          <Section title={<L zh="核心论断" vi="Luận đoán cốt lõi" />}>
             <div style={{ fontSize: '15px', color: 'var(--tx-0)', lineHeight: 2, letterSpacing: '0.02em', whiteSpace: 'pre-wrap' }}>
               {data.parsed.lundian}
             </div>
@@ -161,7 +172,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
         )}
 
         {data.parsed.yiju && (
-          <Section title="命盘依据">
+          <Section title={<L zh="命盘依据" vi="Căn cứ trên lá số" />}>
             <div style={{ fontSize: '14px', color: 'var(--tx-0)', lineHeight: 2, letterSpacing: '0.02em', whiteSpace: 'pre-wrap' }}>
               {data.parsed.yiju}
             </div>
@@ -169,7 +180,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
         )}
 
         {data.parsed.chuchu && (
-          <Section title="经典出处" minimal>
+          <Section title={<L zh="经典出处" vi="Xuất xứ kinh điển" />} minimal>
             <div style={{ fontSize: '13px', color: 'var(--tx-2)', lineHeight: 2, letterSpacing: '0.02em', whiteSpace: 'pre-wrap' }}>
               {data.parsed.chuchu}
             </div>
@@ -186,10 +197,10 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
           textAlign: 'center',
         }}>
           <div style={{ fontSize: '14px', color: 'var(--tx-0)', fontWeight: 600, letterSpacing: '0.1em', marginBottom: '6px' }}>
-            想看你自己命盘的{data.topicLabel}？
+            <L zh={`想看你自己命盘的${data.topicLabel}？`} vi={`Muốn xem «${topicV}» trên lá số của chính bạn?`} />
           </div>
           <div style={{ fontSize: '12px', color: 'var(--tx-2)', marginBottom: '16px' }}>
-            输入生辰起盘 · 倪师正宗解读 · AI 答疑伴学
+            <L zh="输入生辰起盘 · 倪师正宗解读 · AI 答疑伴学" vi="Nhập ngày giờ sinh để lập lá số · luận giải chính tông thầy Nghê · AI giải đáp đồng hành" />
           </div>
           <Link href="/chart" style={{
             display: 'inline-block',
@@ -203,12 +214,12 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
             textDecoration: 'none',
             boxShadow: '0 4px 12px rgba(184,146,42,0.3)',
           }}>
-            立即起盘 →
+            <L zh="立即起盘" vi="Lập lá số ngay" /> →
           </Link>
         </div>
 
         {/* 内链：同主星其他 topic */}
-        <Section title={`${star}星的其他宫位解读`} minimal>
+        <Section title={<L zh={`${star}星的其他宫位解读`} vi={`Sao ${starV} ở các cung khác`} />} minimal>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {otherTopicsForStar.map(t => {
               const d = getKnowledge(star, t);
@@ -226,7 +237,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
                     textDecoration: 'none',
                   }}
                 >
-                  {star}入{d.palaceName}
+                  <L zh={`${star}入${d.palaceName}`} vi={`${starV} nhập ${palaceVi(d.palaceName)}`} />
                 </Link>
               );
             })}
@@ -234,7 +245,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
         </Section>
 
         {/* 内链：同 topic 其他主星 */}
-        <Section title={`其他主星入${data.palaceName}宫的解读`} minimal>
+        <Section title={<L zh={`其他主星入${data.palaceName}宫的解读`} vi={`Các chính tinh khác nhập cung ${palaceV}`} />} minimal>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {otherStarsForTopic.slice(0, 13).map(s => (
               <Link
@@ -250,7 +261,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
                   textDecoration: 'none',
                 }}
               >
-                {s}入{data.palaceName}
+                <L zh={`${s}入${data.palaceName}`} vi={`${starVi(s)} nhập ${palaceV}`} />
               </Link>
             ))}
           </div>
@@ -266,24 +277,31 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
           textAlign: 'center',
         }}>
           <div style={{ fontSize: '11px', color: 'var(--ac-dim)', letterSpacing: '0.15em', marginBottom: '6px' }}>
-            想读原典？
+            <L zh="想读原典？" vi="Muốn đọc nguyên điển?" />
           </div>
           <Link href="/library" style={{ fontSize: '13px', color: 'var(--ac)', fontWeight: 500, letterSpacing: '0.1em', textDecoration: 'none' }}>
-            📜 查阅古籍原典库 — 紫微斗数全集 / 全书 / 骨髓赋 →
+            📜 <L
+              zh="查阅古籍原典库 — 紫微斗数全集 / 全书 / 骨髓赋"
+              vi="Tra cứu thư viện cổ thư — Tử Vi Đẩu Số Toàn Tập / Toàn Thư / Cốt Tủy Phú"
+            /> →
           </Link>
         </div>
       </article>
 
       {/* 页脚 */}
       <footer style={{ borderTop: '1px solid rgba(184,146,42,0.15)', padding: '20px 24px', textAlign: 'center', fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.1em' }}>
-        <div style={{ marginBottom: '6px' }}>紫微研究 · 基于倪海厦正宗体系 · 仅供学习参考</div>
-        <div style={{ opacity: 0.85 }}>本平台不构成任何医疗、投资、法律或重大决策建议</div>
+        <div style={{ marginBottom: '6px' }}>
+          <L zh="紫微研究 · 基于倪海厦正宗体系 · 仅供学习参考" vi="Nghiên cứu Tử Vi · theo hệ chính tông Nghê Hải Hạ · chỉ để học tập tham khảo" />
+        </div>
+        <div style={{ opacity: 0.85 }}>
+          <L zh="本平台不构成任何医疗、投资、法律或重大决策建议" vi="Nền tảng không cấu thành lời khuyên y tế, đầu tư, pháp lý hay cho các quyết định lớn" />
+        </div>
       </footer>
     </div>
   );
 }
 
-function Section({ title, children, gradient, minimal }: { title: string; children: React.ReactNode; gradient?: boolean; minimal?: boolean }) {
+function Section({ title, children, gradient, minimal }: { title: React.ReactNode; children: React.ReactNode; gradient?: boolean; minimal?: boolean }) {
   return (
     <section style={{ marginBottom: minimal ? '24px' : '32px' }}>
       <h2 style={{

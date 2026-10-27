@@ -56,6 +56,17 @@
   --r-lg:  16px;
   --r-xl:  24px;
   --r-pill:999px;
+
+  /* 命盘组件用的语义色（映射到上面的调色板，自动随明暗主题切换） */
+  --t-gold:    var(--ac);
+  --t-text:    var(--tx-0);
+  --t-text1:   var(--tx-1);
+  --t-text2:   var(--tx-2);
+  --t-faint:   var(--tx-3);
+  --t-border:  var(--bdr);
+  --t-bg:      var(--bg-1);
+  --t-surface: var(--bg-2);
+  --t-card:    var(--bg-card);
 }
 
 /* ─── 暗色模式 Token 覆盖 ──────────────────────────────── */
@@ -434,3 +445,12 @@ body {
    select 本身是半透明底 + 浅色字，Windows 上原生下拉列表是白底，浅灰字配白底看不清（#14） */
 [data-theme="dark"] select { color-scheme: dark; }
 [data-theme="dark"] select option { background-color: var(--bg-2); color: var(--tx-1); }
+
+/* 玻璃卡片（解读面板等） */
+.card-glass {
+  background: var(--bg-card);
+  border: 1px solid var(--bdr);
+  box-shadow: var(--sh-md);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}

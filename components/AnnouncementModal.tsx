@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocale } from './LocaleProvider';
 
 // 公告版本号——以后想再弹新公告，改这里就行（旧版 key 失效，新版重新弹一次）
 const ANNOUNCEMENT_VERSION = '2026-05-01';
@@ -11,6 +12,7 @@ export default function AnnouncementModal() {
   // 没看过 → 立即覆盖首页；看过 → 不再弹。
   const [open, setOpen] = useState(false);
   const [decided, setDecided] = useState(false); // hydration 完成标志
+  const { tr } = useLocale();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -88,11 +90,11 @@ export default function AnnouncementModal() {
                 A LETTER TO USERS
               </div>
               <h2 style={{ fontSize: '19px', fontWeight: 700, color: '#3d2f10', letterSpacing: '0.08em', margin: 0 }}>
-                致正在使用这个平台的你
+                {tr('致正在使用这个平台的你', 'Gửi bạn — người đang dùng nền tảng này')}
               </h2>
               <button
                 onClick={close}
-                aria-label="关闭"
+                aria-label={tr('关闭', 'Đóng')}
                 style={{
                   position: 'absolute', top: '14px', right: '16px',
                   width: '28px', height: '28px',
@@ -117,12 +119,12 @@ export default function AnnouncementModal() {
               textAlign: 'center',
             }}>
               <div style={{ fontSize: '10px', letterSpacing: '0.3em', color: '#c45a2d', marginBottom: '4px', fontWeight: 600 }}>
-                LIMITED TIME · 限时回馈
+                LIMITED TIME · {tr('限时回馈', 'Ưu đãi có hạn')}
               </div>
               <div style={{ fontSize: '14px', color: '#8b3a1a', fontWeight: 600, lineHeight: 1.6 }}>
-                <span style={{ fontSize: '16px', color: '#c45a2d', fontWeight: 700 }}>5 月 1 日 — 5 月 8 日</span>
+                <span style={{ fontSize: '16px', color: '#c45a2d', fontWeight: 700 }}>{tr('5 月 1 日 — 5 月 8 日', '1/5 — 8/5')}</span>
                 <br />
-                平台全部功能 + AI 提问 全部免费开放
+                {tr('平台全部功能 + AI 提问 全部免费开放', 'Toàn bộ tính năng + hỏi AI đều mở miễn phí')}
               </div>
             </div>
 
@@ -136,13 +138,19 @@ export default function AnnouncementModal() {
               flex: 1,
             }}>
               <p style={{ margin: '0 0 12px' }}>
-                说实话，我真的没想到会有这么大的流量。
+                {tr('说实话，我真的没想到会有这么大的流量。', 'Nói thật, tôi không ngờ lượng người truy cập lại lớn đến vậy.')}
               </p>
               <p style={{ margin: '0 0 12px' }}>
-                最开始做这个平台，我的初心其实很简单：在 AI 时代，把倪师这套原本复杂、门槛很高的体系，尽量做得更简单、更高效、更容易理解。
+                {tr(
+                  '最开始做这个平台，我的初心其实很简单：在 AI 时代，把倪师这套原本复杂、门槛很高的体系，尽量做得更简单、更高效、更容易理解。',
+                  'Lúc mới làm nền tảng này, tâm nguyện ban đầu của tôi rất đơn giản: trong thời đại AI, biến hệ thống vốn phức tạp, khó tiếp cận của thầy Nghê thành thứ đơn giản hơn, hiệu quả hơn, dễ hiểu hơn.',
+                )}
               </p>
               <p style={{ margin: '0 0 12px' }}>
-                不一定每个人都要先学很久、看很多书，才能接触这些内容。我们希望通过这个平台，让大家用更轻松的方式，获得一些对自我、人生阶段、选择方向的参考和启发。
+                {tr(
+                  '不一定每个人都要先学很久、看很多书，才能接触这些内容。我们希望通过这个平台，让大家用更轻松的方式，获得一些对自我、人生阶段、选择方向的参考和启发。',
+                  'Không phải ai cũng cần học thật lâu, đọc thật nhiều sách mới tiếp cận được những nội dung này. Chúng tôi mong qua nền tảng này, mọi người có thể nhẹ nhàng hơn mà nhận được chút tham khảo và gợi mở về bản thân, về giai đoạn đời mình và hướng lựa chọn.',
+                )}
               </p>
               <p style={{
                 margin: '0 0 12px',
@@ -153,22 +161,32 @@ export default function AnnouncementModal() {
                 fontStyle: 'italic',
                 color: '#7a5e2a',
               }}>
-                倪师曾说过一句话：人怎么可能发明出完全没有用的东西呢？
+                {tr('倪师曾说过一句话：人怎么可能发明出完全没有用的东西呢？', 'Thầy Nghê từng nói: làm sao con người lại có thể phát minh ra thứ hoàn toàn vô dụng được?')}
               </p>
               <p style={{ margin: '0 0 12px' }}>
-                我一直觉得，易经如此，紫微斗数也是如此。它们真正有价值的地方，不是让人被某个结果困住，而是让我们更早看见自己的性格惯性、人生课题和选择方向。看见之后，才有机会调整；理解之后，才有机会变得更好。
+                {tr(
+                  '我一直觉得，易经如此，紫微斗数也是如此。它们真正有价值的地方，不是让人被某个结果困住，而是让我们更早看见自己的性格惯性、人生课题和选择方向。看见之后，才有机会调整；理解之后，才有机会变得更好。',
+                  'Tôi luôn nghĩ, Kinh Dịch là vậy, Tử Vi Đẩu Số cũng vậy. Giá trị thật sự của chúng không phải là khiến con người bị trói buộc vào một kết quả nào đó, mà là giúp ta sớm nhìn thấy thói quen tính cách, bài học đời người và hướng lựa chọn của mình. Thấy rồi mới có cơ hội điều chỉnh; hiểu rồi mới có cơ hội trở nên tốt hơn.',
+                )}
               </p>
               <p style={{ margin: '0 0 12px' }}>
-                至于那些说&ldquo;你当下在看这些，其实也是命运的一部分&rdquo;之类的话，我就不多评价了。
+                {tr(
+                  <>至于那些说&ldquo;你当下在看这些，其实也是命运的一部分&rdquo;之类的话，我就不多评价了。</>,
+                  <>Còn những câu kiểu &ldquo;việc bạn đang xem những thứ này, thực ra cũng là một phần của số mệnh&rdquo;, tôi xin không bình luận thêm.</>,
+                )}
               </p>
               <p style={{ margin: '0 0 12px' }}>
-                这几天账号被小红书抬走了，<strong style={{ color: '#c45a2d' }}>5 月 3 号开始恢复正常更新。</strong>
+                {tr('这几天账号被小红书抬走了，', 'Mấy hôm nay tài khoản bị Xiaohongshu (Tiểu Hồng Thư) khóa, ')}
+                <strong style={{ color: '#c45a2d' }}>{tr('5 月 3 号开始恢复正常更新。', 'từ ngày 3/5 sẽ cập nhật bình thường trở lại.')}</strong>
               </p>
               <p style={{ margin: '0 0 16px', color: '#3d2f10', fontWeight: 500 }}>
-                最后，真心祝愿大家都能越来越了解自己，越来越爱自己，也越来越有能力爱身边的人。
+                {tr(
+                  '最后，真心祝愿大家都能越来越了解自己，越来越爱自己，也越来越有能力爱身边的人。',
+                  'Cuối cùng, chân thành chúc mọi người ngày càng hiểu mình hơn, yêu bản thân hơn, và ngày càng có khả năng yêu thương những người bên cạnh.',
+                )}
               </p>
               <p style={{ margin: 0, textAlign: 'right', fontSize: '13px', color: '#7a5e2a' }}>
-                ——谢谢大家 🙏
+                {tr('——谢谢大家 🙏', '— Cảm ơn mọi người 🙏')}
               </p>
             </div>
 
@@ -197,7 +215,7 @@ export default function AnnouncementModal() {
                   boxShadow: '0 4px 12px rgba(184,146,42,0.3)',
                 }}
               >
-                我知道了
+                {tr('我知道了', 'Tôi đã hiểu')}
               </button>
             </div>
           </motion.div>

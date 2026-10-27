@@ -5,6 +5,10 @@ import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'fra
 import StarField from '@/components/StarField';
 import { useTheme, type Theme } from '@/components/ThemeProvider';
 import AnnouncementModal from '@/components/AnnouncementModal';
+import { useLocale, LocaleSwitch } from '@/components/LocaleProvider';
+import {
+  FEATURES_VI, SECTIONS_VI, NI_TEACHINGS_VI, SIHUA_BRIEF_VI, STAR_BRIEF_VI, THREE_VI, NiBioVi,
+} from '@/lib/i18n/home-vi';
 
 // ─── 滚动入场 wrapper ────────────────────────────────────
 function FadeIn({
@@ -38,13 +42,14 @@ function WeakBoundary({ line }: { line: string }) {
 // ─── 主题切换按钮 ────────────────────────────────────────
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const { tr } = useLocale();
   const isDark = theme === 'dark';
   return (
     <motion.button
       onClick={toggle}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.93 }}
-      aria-label={isDark ? '切换亮色主题' : '切换暗色主题'}
+      aria-label={isDark ? tr('切换亮色主题', 'Chuyển sang giao diện sáng') : tr('切换暗色主题', 'Chuyển sang giao diện tối')}
       className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
       style={{
         borderColor: isDark ? 'rgba(212,168,67,0.3)' : 'rgba(140,100,20,0.35)',
@@ -73,7 +78,7 @@ function ThemeToggle() {
           color: isDark ? 'rgba(212,180,100,0.85)' : 'rgba(110,72,8,0.8)',
           transition: 'color 0.35s ease',
         }}>
-        {isDark ? '暗色' : '亮色'}
+        {isDark ? tr('暗色', 'Tối') : tr('亮色', 'Sáng')}
       </span>
     </motion.button>
   );
@@ -276,6 +281,7 @@ const STAR_BRIEF: Record<string, { attr: string; brief: string }> = {
 
 // ─── 功能视觉装饰 ────────────────────────────────────────
 function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType<typeof useColors> }) {
+  const { tr, term, locale } = useLocale();
   if (index === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5">
@@ -300,19 +306,24 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
           })}
         </div>
         <p className="text-[10px] tracking-widest transition-colors duration-300"
-          style={{ color: c.textFaint }}>倪海厦排盘法</p>
+          style={{ color: c.textFaint }}>{tr('倪海厦排盘法', 'Phép an sao Nghê Hải Hạ')}</p>
       </div>
     );
   }
 
   if (index === 1) {
     const [sel, setSel] = useState<string | null>(null);
-    const selInfo = sel ? (STAR_BRIEF[sel] ?? SIHUA_BRIEF[sel] ?? null) : null;
+    const starBrief = locale === 'vi' ? STAR_BRIEF_VI : STAR_BRIEF;
+    const sihuaBrief = locale === 'vi' ? SIHUA_BRIEF_VI : SIHUA_BRIEF;
+    const selInfo = sel ? (starBrief[sel] ?? sihuaBrief[sel] ?? null) : null;
+    // 「化禄」→「Hóa Lộc」
+    const sihuaLabel = (zh: string) => locale === 'vi' ? `Hóa ${term(zh.slice(1))}` : zh;
+    const selLabel = sel ? (sihuaBrief[sel] && !starBrief[sel] ? sihuaLabel(sel) : term(sel)) : '';
     return (
       <div className="flex flex-col gap-4 h-full justify-center">
         {[
-          { group: '紫微系', stars: ['紫微', '天机', '太阳', '武曲', '天同', '廉贞'] },
-          { group: '天府系', stars: ['天府', '太阴', '贪狼', '巨门', '天相', '天梁', '七杀', '破军'] },
+          { group: tr('紫微系', 'Chòm Tử Vi'), stars: ['紫微', '天机', '太阳', '武曲', '天同', '廉贞'] },
+          { group: tr('天府系', 'Chòm Thiên Phủ'), stars: ['天府', '太阴', '贪狼', '巨门', '天相', '天梁', '七杀', '破军'] },
         ].map(group => (
           <div key={group.group}>
             <div className="text-[11px] tracking-widest mb-2 transition-colors duration-300"
@@ -330,7 +341,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
                     background: sel === s ? `${c.goldLine}30` : 'transparent',
                     fontWeight: sel === s ? 600 : 400,
                   }}>
-                  {s}
+                  {term(s)}
                 </motion.button>
               ))}
             </div>
@@ -338,7 +349,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
         ))}
         <div>
           <div className="text-[11px] tracking-widest mb-2 transition-colors duration-300"
-            style={{ color: c.textFaint }}>四化飞星</div>
+            style={{ color: c.textFaint }}>{tr('四化飞星', 'Tứ hóa phi tinh')}</div>
           <div className="flex gap-2 flex-wrap">
             {[['化禄', 'rgba(52,211,153,0.7)'], ['化权', 'rgba(96,165,250,0.7)'], ['化科', 'rgba(250,204,21,0.7)'], ['化忌', 'rgba(248,113,113,0.7)']].map(([label, color]) => (
               <motion.button key={label}
@@ -352,7 +363,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
                   background: sel === label ? `${color.replace('0.7', '0.15')}` : 'transparent',
                   fontWeight: sel === label ? 600 : 400,
                 }}>
-                {label}
+                {sihuaLabel(label)}
               </motion.button>
             ))}
           </div>
@@ -365,7 +376,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
               className="rounded-xl p-4 mt-1.5"
               style={{ border: `1px solid ${c.goldLine}`, background: c.featureBg }}>
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-sm font-semibold" style={{ color: c.goldSolid }}>{sel}</span>
+                <span className="text-sm font-semibold" style={{ color: c.goldSolid }}>{selLabel}</span>
                 <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ color: c.tagText, border: `1px solid ${c.goldLine}` }}>{selInfo.attr}</span>
               </div>
               <p className="text-xs leading-relaxed" style={{ color: c.textSecond }}>{selInfo.brief}</p>
@@ -378,9 +389,12 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
 
   if (index === 2) {
     const msgs = [
-      { role: 'user', text: '我今年的事业运势如何？' },
-      { role: 'ai', text: '命宫天机化禄，今年大限走官禄宫，三方有左辅相助，事业有贵人提携，适合主动拓展…' },
-      { role: 'user', text: '什么时候感情运最好？' },
+      { role: 'user', text: tr('我今年的事业运势如何？', 'Vận sự nghiệp năm nay của tôi thế nào?') },
+      { role: 'ai', text: tr(
+        '命宫天机化禄，今年大限走官禄宫，三方有左辅相助，事业有贵人提携，适合主动拓展…',
+        'Cung Mệnh có Thiên Cơ hóa Lộc, đại hạn năm nay đi qua cung Quan Lộc, tam phương có Tả Phù trợ giúp; sự nghiệp có quý nhân nâng đỡ, nên chủ động mở rộng…',
+      ) },
+      { role: 'user', text: tr('什么时候感情运最好？', 'Khi nào vận tình cảm tốt nhất?') },
     ];
     return (
       <div className="flex flex-col gap-2 h-full justify-center">
@@ -406,9 +420,9 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
 
   if (index === 3) {
     const patterns = [
-      { name: '杀破狼格', desc: '开创进取之命', ok: true },
-      { name: '廉相格',   desc: '行政印绶之格', ok: true },
-      { name: '化忌入命', desc: '需关注心理课题', ok: false },
+      { name: tr('杀破狼格', 'Cách Sát Phá Tham'), desc: tr('开创进取之命', 'Mệnh khai sáng, tiến thủ'), ok: true },
+      { name: tr('廉相格', 'Cách Liêm Tướng'), desc: tr('行政印绶之格', 'Cách hành chính, ấn thụ'), ok: true },
+      { name: tr('化忌入命', 'Hóa Kỵ nhập Mệnh'), desc: tr('需关注心理课题', 'Cần chú ý vấn đề tâm lý'), ok: false },
     ];
     return (
       <div className="flex flex-col gap-3 h-full justify-center">
@@ -431,7 +445,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
           </motion.div>
         ))}
         <div className="text-[9px] mt-2 tracking-wider text-center" style={{ color: c.textFaint }}>
-          自动识别 11 种经典格局
+          {tr('自动识别 11 种经典格局', 'Tự động nhận diện 11 cách cục kinh điển')}
         </div>
       </div>
     );
@@ -445,6 +459,11 @@ export default function HomePage() {
   const router = useRouter();
   const { theme } = useTheme();
   const c = useColors(theme);
+  const { tr, term, locale } = useLocale();
+  const vi = locale === 'vi';
+  const features = vi ? FEATURES_VI : FEATURES;
+  const sections = SECTIONS.map(s => (vi ? { ...s, ...SECTIONS_VI[s.key] } : s));
+  const teachings = vi ? NI_TEACHINGS_VI : NI_TEACHINGS;
 
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -486,23 +505,24 @@ export default function HomePage() {
         }}>
         <div className="text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] font-medium transition-colors duration-300 flex-shrink-0"
           style={{ color: c.goldSolid }}>
-          紫微命盘
+          {tr('紫微命盘', 'Lá Số Tử Vi')}
         </div>
         <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+          <LocaleSwitch />
           <ThemeToggle />
           <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/heming')}
             className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
             style={{ border: `1px solid ${c.navBorder}`, color: c.textMuted }}>
-            合盘
+            {tr('合盘', 'Hợp hôn')}
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/chart')}
             className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
             style={{ border: `1px solid ${c.goldLine}`, color: c.goldSolid }}>
-            立即起盘
+            {tr('立即起盘', 'Lập lá số')}
           </motion.button>
         </div>
       </nav>
@@ -516,7 +536,7 @@ export default function HomePage() {
             className="flex items-center justify-center gap-3 mb-8">
             <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
             <span className="text-[11px] tracking-[0.45em] transition-colors duration-300" style={{ color: c.tagText }}>
-              紫微斗数 · 倪海厦体系
+              {tr('紫微斗数 · 倪海厦体系', 'Tử Vi Đẩu Số · Hệ Nghê Hải Hạ')}
             </span>
             <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
           </motion.div>
@@ -528,10 +548,10 @@ export default function HomePage() {
             <h1
               className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold leading-none mb-5`}
               style={{
-                fontSize: 'clamp(56px, 10vw, 124px)',
-                letterSpacing: '0.07em',
+                fontSize: vi ? 'clamp(44px, 8vw, 104px)' : 'clamp(56px, 10vw, 124px)',
+                letterSpacing: vi ? '0.02em' : '0.07em',
               }}>
-              紫微命盘
+              {tr('紫微命盘', 'Lá Số Tử Vi')}
             </h1>
           </motion.div>
 
@@ -539,19 +559,22 @@ export default function HomePage() {
             transition={{ duration: 0.7, delay: 0.45 }}
             className="text-base md:text-lg tracking-[0.18em] mb-2"
             style={{ color: c.textSecond, fontWeight: 500 }}>
-            紫微为门 · 天地人为路 · 倪海厦为师
+            {tr('紫微为门 · 天地人为路 · 倪海厦为师', 'Tử Vi là cửa · Thiên Địa Nhân là đường · Nghê Hải Hạ là thầy')}
           </motion.p>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.55 }}
             className="text-xs md:text-sm tracking-[0.3em] mb-6"
             style={{ color: c.textMuted, opacity: 0.85 }}>
-            AI 答疑 · 知行合一
+            {tr('AI 答疑 · 知行合一', 'AI giải đáp · Tri hành hợp nhất')}
           </motion.p>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.65 }}
             className="text-sm max-w-xl mx-auto leading-relaxed mb-10"
             style={{ color: c.textMuted }}>
-            输入出生年月日时，生成专属紫微斗数命盘 — 后续天纪、地纪、人纪学习模块陆续开放。
+            {tr(
+              '输入出生年月日时，生成专属紫微斗数命盘 — 后续天纪、地纪、人纪学习模块陆续开放。',
+              'Nhập ngày giờ sinh để lập lá số Tử Vi Đẩu Số của riêng bạn — các học phần Thiên Kỷ, Địa Kỷ, Nhân Kỷ sẽ lần lượt mở sau.',
+            )}
           </motion.p>
 
           {/* CTA */}
@@ -563,21 +586,21 @@ export default function HomePage() {
               onClick={() => router.push('/chart')}
               className="px-12 py-4 font-semibold text-base tracking-widest rounded-full"
               style={{ background: c.ctaBg, color: c.ctaText }}>
-              立即起盘
+              {tr('立即起盘', 'Lập lá số ngay')}
             </motion.button>
           </motion.div>
 
           {/* 十四主星 */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ delay: 1.05, duration: 0.8 }}
-            className="mt-12 grid grid-cols-7 gap-1.5 max-w-[540px] mx-auto">
+            className={`mt-12 grid ${vi ? 'grid-cols-4 sm:grid-cols-7 max-w-[720px]' : 'grid-cols-7 max-w-[540px]'} gap-1.5 mx-auto`}>
             {STARS.map((star, i) => (
               <motion.div key={star.name}
                 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.05 + i * 0.03, duration: 0.35 }}
                 className="flex items-center justify-center px-2 py-1 rounded-full"
                 style={{ background: c.starBg, border: `1px solid ${c.starBorder}` }}>
-                <span className="text-[11px] tracking-wide" style={{ color: c.starText }}>{star.name}</span>
+                <span className="text-[11px] tracking-wide" style={{ color: c.starText, whiteSpace: 'nowrap' }}>{term(star.name)}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -605,12 +628,12 @@ export default function HomePage() {
           }}>
             <div style={{ fontSize: '20px', marginBottom: '6px', lineHeight: 1 }}>🎁</div>
             <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '14px' }}>5/1 — 5/8</span>
-              <span> 限时回馈</span>
+              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '14px' }}>{tr('5/1 — 5/8', '1/5 — 8/5')}</span>
+              <span>{tr(' 限时回馈', ' ưu đãi có hạn')}</span>
             </div>
             <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              全部功能 + AI 提问
-              <strong style={{ color: '#c45a2d' }}> 全免费</strong>
+              {tr('全部功能 + AI 提问', 'Toàn bộ tính năng + hỏi AI')}
+              <strong style={{ color: '#c45a2d' }}>{tr(' 全免费', ' miễn phí')}</strong>
             </div>
           </div>
         </motion.div>
@@ -636,11 +659,11 @@ export default function HomePage() {
           }}>
             <div style={{ fontSize: '18px', marginBottom: '4px', lineHeight: 1 }}>🎁</div>
             <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '13px' }}>5/1 — 5/8</span>
-              <span> 限时回馈</span>
+              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '13px' }}>{tr('5/1 — 5/8', '1/5 — 8/5')}</span>
+              <span>{tr(' 限时回馈', ' ưu đãi có hạn')}</span>
             </div>
             <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              全部功能 + AI <strong style={{ color: '#c45a2d' }}>全免费</strong>
+              {tr('全部功能 + AI ', 'Toàn bộ tính năng + AI ')}<strong style={{ color: '#c45a2d' }}>{tr('全免费', 'miễn phí')}</strong>
             </div>
           </div>
         </motion.div>
@@ -649,7 +672,7 @@ export default function HomePage() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
           className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none">
-          <span className="text-[9px] tracking-[0.4em] uppercase" style={{ color: c.scrollText }}>探索更多</span>
+          <span className="text-[9px] tracking-[0.4em] uppercase" style={{ color: c.scrollText }}>{tr('探索更多', 'Khám phá thêm')}</span>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
             className="w-px h-8" style={{ background: `linear-gradient(to bottom, ${c.scrollLine}, transparent)` }} />
         </motion.div>
@@ -671,14 +694,14 @@ export default function HomePage() {
         <FadeIn className="relative mx-auto text-center w-full" y={20}>
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="h-px w-16" style={{ background: 'linear-gradient(to right, transparent, rgba(212,168,67,0.45))' }} />
-            <span className="text-[10px] tracking-[0.55em] uppercase" style={{ color: 'rgba(212,168,67,0.5)' }}>命 · 运 · 观</span>
+            <span className="text-[10px] tracking-[0.55em] uppercase" style={{ color: 'rgba(212,168,67,0.5)' }}>{tr('命 · 运 · 观', 'Mệnh · Vận · Quan')}</span>
             <div className="h-px w-16" style={{ background: 'linear-gradient(to left, transparent, rgba(212,168,67,0.45))' }} />
           </div>
           <div className="space-y-3" style={{ maxWidth: '840px', margin: '0 auto' }}>
             {[
-              { text: '提前窥探命运的意义', size: 'clamp(17px, 2.2vw, 28px)', color: 'rgba(215,228,252,0.72)', delay: 0.1 },
-              { text: '不在于预知未来', size: 'clamp(21px, 2.6vw, 32px)', color: 'rgba(220,232,250,0.74)', delay: 0.25 },
-              { text: '而在于不断认识自己', size: 'clamp(24px, 3vw, 40px)', color: 'rgba(218,230,248,0.8)', delay: 0.34 },
+              { text: tr('提前窥探命运的意义', 'Ý nghĩa của việc nhìn trước vận mệnh'), size: 'clamp(17px, 2.2vw, 28px)', color: 'rgba(215,228,252,0.72)', delay: 0.1 },
+              { text: tr('不在于预知未来', 'không nằm ở chỗ biết trước tương lai'), size: 'clamp(21px, 2.6vw, 32px)', color: 'rgba(220,232,250,0.74)', delay: 0.25 },
+              { text: tr('而在于不断认识自己', 'mà ở chỗ không ngừng hiểu rõ chính mình'), size: 'clamp(24px, 3vw, 40px)', color: 'rgba(218,230,248,0.8)', delay: 0.34 },
             ].map((line, i) => (
               <motion.p key={i}
                 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
@@ -692,7 +715,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.45 }}
               className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold`}
               style={{ fontSize: 'clamp(24px, 3.4vw, 48px)', letterSpacing: '0.05em', lineHeight: 1.35 }}>
-              最终书写属于自己的人生剧本
+              {tr('最终书写属于自己的人生剧本', 'để cuối cùng tự viết nên kịch bản đời mình')}
             </motion.p>
           </div>
         </FadeIn>
@@ -712,10 +735,10 @@ export default function HomePage() {
             <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
           </div>
           <div className="text-2xl lg:text-3xl font-bold mb-2 tracking-[0.15em]" style={{ color: c.textPrimary }}>
-            倪师方法论 · 渐次展开
+            {tr('倪师方法论 · 渐次展开', 'Phương pháp luận thầy Nghê · mở dần từng phần')}
           </div>
           <div className="text-xs lg:text-sm tracking-[0.1em]" style={{ color: c.textMuted }}>
-            从紫微入门，逐步开放天纪 / 地纪 / 人纪学习模块
+            {tr('从紫微入门，逐步开放天纪 / 地纪 / 人纪学习模块', 'Bắt đầu từ Tử Vi, rồi lần lượt mở các học phần Thiên Kỷ / Địa Kỷ / Nhân Kỷ')}
           </div>
         </FadeIn>
 
@@ -735,7 +758,7 @@ export default function HomePage() {
             }} />
 
           <div className="flex flex-col gap-5 lg:grid lg:grid-cols-4 lg:gap-4">
-            {SECTIONS.map((s, i) => {
+            {sections.map((s, i) => {
               const ready = s.status === 'ready';
               return (
                 <motion.div key={s.key}
@@ -812,7 +835,7 @@ export default function HomePage() {
 
       {/* ══ 功能详解 ══════════════════════════════════════ */}
       <section className="relative z-10">
-        {FEATURES.map((feature, i) => (
+        {features.map((feature, i) => (
           <div key={i}
             className={`flex items-center px-6 md:px-10 lg:px-14 py-20 md:py-24 ${i <= 2 ? 'min-h-[82svh] lg:min-h-[92vh]' : ''}`}
             style={{ background: i % 2 === 1 ? c.altSection : 'transparent' }}>
@@ -829,7 +852,9 @@ export default function HomePage() {
                   <FadeIn delay={0.1}>
                     <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold leading-tight mb-5 tracking-tight`}
                       style={{
-                        fontSize: i < 2 ? 'clamp(36px, 4vw, 56px)' : 'clamp(30px, 3.5vw, 48px)',
+                        fontSize: vi
+                          ? 'clamp(28px, 3.2vw, 44px)'
+                          : i < 2 ? 'clamp(36px, 4vw, 56px)' : 'clamp(30px, 3.5vw, 48px)',
                         whiteSpace: 'pre-line',
                       }}>
                       {feature.title}
@@ -883,11 +908,11 @@ export default function HomePage() {
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-5 tracking-tight`}
                 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>
-                天 · 地 · 人
+                {tr('天 · 地 · 人', 'Thiên · Địa · Nhân')}
               </h2>
               <p className="max-w-2xl mx-auto text-sm leading-relaxed" style={{ color: c.textSecond }}>
-                倪海厦老师的核心命运观：命运从来不是人生的全部。<br />
-                他将影响人生的力量分为三个同等重要的维度。
+                {tr('倪海厦老师的核心命运观：命运从来不是人生的全部。', 'Quan niệm cốt lõi của thầy Nghê Hải Hạ: vận mệnh chưa bao giờ là toàn bộ đời người.')}<br />
+                {tr('他将影响人生的力量分为三个同等重要的维度。', 'Ông chia các lực ảnh hưởng đến đời người thành ba phương diện quan trọng ngang nhau.')}
               </p>
             </div>
           </FadeIn>
@@ -896,13 +921,13 @@ export default function HomePage() {
               { glyph: '天', label: '先天命运', pct: '⅓', color: c.goldSolid, borderColor: c.goldLine, desc: '紫微斗数所揭示的，是一个人的先天命盘格局——出生时间决定的星曜布局、五行局数、命宫主星。这只是命运的三分之一，是人生的底色，而非全貌。', sub: '命盘 · 星曜 · 五行' },
               { glyph: '地', label: '地理环境', pct: '⅓', color: 'rgba(96,165,250,0.9)', borderColor: 'rgba(96,165,250,0.3)', desc: '你所在的地理环境、城市、国家、风水格局，乃至家庭背景与社会结构，共同构成了命运的第二个维度。同一命盘，生在不同地方，际遇可以天壤之别。', sub: '地域 · 风水 · 环境' },
               { glyph: '人', label: '人心意念', pct: '⅓', color: 'rgba(100,216,139,0.9)', borderColor: 'rgba(100,216,139,0.3)', desc: '个人的意志、心态、选择与行动，才是改变命运最主动的力量。倪师强调：了解命盘是为了更好地做人，而不是坐等命运安排。精进自己，是最强的破局之道。', sub: '意志 · 选择 · 行动' },
-            ].map((item, i) => (
-              <FadeIn key={item.glyph} delay={0.1 + i * 0.12}>
+            ].map((item, i) => (vi ? { ...item, ...THREE_VI[i] } : item)).map((item, i) => (
+              <FadeIn key={i} delay={0.1 + i * 0.12}>
                 <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.1 }}
                   className="rounded-2xl p-7 h-full flex flex-col"
                   style={{ background: c.cardBg, border: `1px solid ${item.borderColor}`, boxShadow: c.cardShadow }}>
                   <div className="flex items-start justify-between mb-5">
-                    <div className="text-5xl font-bold leading-none" style={{ color: item.color }}>{item.glyph}</div>
+                    <div className={`${vi ? 'text-4xl' : 'text-5xl'} font-bold leading-none`} style={{ color: item.color }}>{item.glyph}</div>
                     <div className="text-right">
                       <div className="text-2xl font-bold" style={{ color: item.color }}>{item.pct}</div>
                       <div className="text-[9px] mt-0.5 tracking-widest" style={{ color: c.textMuted }}>of life</div>
@@ -921,9 +946,9 @@ export default function HomePage() {
           <FadeIn delay={0.3}>
             <div className="mt-10 text-center">
               <p className="text-sm leading-relaxed" style={{ color: c.textSecond }}>
-                「命运不是人生的全部，加上地理位置和人念，才是。」
+                {tr('「命运不是人生的全部，加上地理位置和人念，才是。」', '«Vận mệnh không phải toàn bộ đời người; cộng thêm vị trí địa lý và ý niệm con người, mới là toàn bộ.»')}
               </p>
-              <p className="mt-2 text-[10px] tracking-widest" style={{ color: c.tagText }}>— 倪海厦</p>
+              <p className="mt-2 text-[10px] tracking-widest" style={{ color: c.tagText }}>{tr('— 倪海厦', '— Nghê Hải Hạ')}</p>
             </div>
           </FadeIn>
         </div>
@@ -942,11 +967,11 @@ export default function HomePage() {
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-6 tracking-tight`}
                 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>
-                倪海厦老师
+                {tr('倪海厦老师', 'Thầy Nghê Hải Hạ')}
               </h2>
               <p className="max-w-2xl mx-auto leading-relaxed text-sm" style={{ color: c.textSecond }}>
-                当代华人圈最具影响力的中医与术数大家之一<br />
-                美国汉唐中医学院创办人 ·「人纪」「天纪」两大教学体系传世
+                {tr('当代华人圈最具影响力的中医与术数大家之一', 'Một trong những bậc thầy Trung y và thuật số có ảnh hưởng nhất giới người Hoa đương đại')}<br />
+                {tr('美国汉唐中医学院创办人 ·「人纪」「天纪」两大教学体系传世', 'Người sáng lập Học viện Trung y Hán Đường (Mỹ) · để lại hai hệ thống giảng dạy «Nhân Kỷ» và «Thiên Kỷ»')}
               </p>
             </div>
           </FadeIn>
@@ -956,9 +981,9 @@ export default function HomePage() {
               style={{ border: `1px solid ${c.niBorder}`, background: c.niBg, boxShadow: c.cardShadow }}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {[
-                  { label: '生于', value: '1954年', sub: '台湾' },
-                  { label: '离世', value: '2012年', sub: '1月31日 · 享年58' },
-                  { label: '传承', value: '紫微斗数', sub: '经方中医 · 易经' },
+                  { label: tr('生于', 'Sinh năm'), value: tr('1954年', '1954'), sub: tr('台湾', 'Đài Loan') },
+                  { label: tr('离世', 'Mất năm'), value: tr('2012年', '2012'), sub: tr('1月31日 · 享年58', '31/1 · hưởng thọ 58') },
+                  { label: tr('传承', 'Truyền thừa'), value: tr('紫微斗数', 'Tử Vi Đẩu Số'), sub: tr('经方中医 · 易经', 'Trung y Kinh phương · Kinh Dịch') },
                 ].map(item => (
                   <div key={item.label} className="text-center rounded-xl px-4 py-3"
                     style={{ border: `1px solid ${c.niDivider}`, background: 'rgba(255,255,255,0.02)' }}>
@@ -970,6 +995,7 @@ export default function HomePage() {
               </div>
               <div className="h-px mb-8" style={{ background: c.niDivider }} />
               <div className="space-y-4 text-sm leading-relaxed max-w-3xl mx-auto" style={{ color: c.textSecond }}>
+                {vi ? <NiBioVi gold={c.goldSolid} /> : (<>
                 <p>
                   <strong style={{ color: c.goldSolid }}>生平履历</strong>：
                   倪海厦先生（1954–2012）出生于台湾，早年师承多位中医名家，专研经方派（《伤寒论》传承）。
@@ -1000,16 +1026,19 @@ export default function HomePage() {
                   倪师的讲课视频在 B 站、YouTube 与各大平台广泛流传，是新一代命理与中医爱好者公认的入门必修。
                   他不仅是紫微斗数的传承者，更是把传统命理与中医带入现代知识体系的关键人物之一。
                 </p>
+                </>)}
                 <p style={{ fontSize: '11px', color: c.textMuted, fontStyle: 'italic', marginTop: '12px' }}>
-                  本平台所有解读基于倪师《天纪》公开教学讲义、《紫微斗数全书》明版、传统三合派古籍整理而成，
-                  仅作文化与个人成长参考。倪师本人与本平台无任何商业关联。
+                  {tr(
+                    '本平台所有解读基于倪师《天纪》公开教学讲义、《紫微斗数全书》明版、传统三合派古籍整理而成，仅作文化与个人成长参考。倪师本人与本平台无任何商业关联。',
+                    'Mọi lời luận giải trên nền tảng này được biên soạn từ giáo trình công khai «Thiên Kỷ» của thầy Nghê, bản đời Minh của «Tử Vi Đẩu Số Toàn Thư» và các cổ thư phái Tam Hợp truyền thống, chỉ dùng để tham khảo về văn hóa và phát triển bản thân. Bản thân thầy Nghê không có bất kỳ liên hệ thương mại nào với nền tảng này.',
+                  )}
                 </p>
               </div>
             </div>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {NI_TEACHINGS.map((teaching, i) => (
+            {teachings.map((teaching, i) => (
               <FadeIn key={i} delay={0.1 + i * 0.08}>
                 <motion.div whileHover={{ y: -3 }} transition={{ duration: 0.1 }}
                   className="rounded-xl p-6 h-full"
@@ -1046,14 +1075,20 @@ export default function HomePage() {
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-4 tracking-tight`}
                 style={{ fontSize: 'clamp(26px, 3.5vw, 40px)' }}>
-                紫微合盘
+                {tr('紫微合盘', 'Hợp hôn Tử Vi')}
               </h2>
               <p className="text-sm leading-relaxed mb-8 max-w-lg mx-auto" style={{ color: c.textSecond }}>
-                输入两个人的出生信息，AI 基于倪海厦体系分析夫妻宫互参、命宫兼容性与三方四正交互，<br className="hidden md:block" />
-                给出感情匹配度、合伙可行性与最佳相处建议。
+                {tr(
+                  '输入两个人的出生信息，AI 基于倪海厦体系分析夫妻宫互参、命宫兼容性与三方四正交互，',
+                  'Nhập thông tin ngày sinh của hai người, AI dựa trên hệ Nghê Hải Hạ phân tích sự tương tham của cung Phu Thê, độ hòa hợp cung Mệnh và tương tác tam phương tứ chính,',
+                )}<br className="hidden md:block" />
+                {tr('给出感情匹配度、合伙可行性与最佳相处建议。', ' rồi đưa ra mức độ hợp nhau trong tình cảm, khả năng hợp tác và lời khuyên để chung sống tốt nhất.')}
               </p>
               <div className="flex justify-center gap-3 flex-wrap mb-6">
-                {['感情匹配度分析', '合伙创业评估', '亲子缘分解读', '婚前相性评估'].map(item => (
+                {tr(
+                  ['感情匹配度分析', '合伙创业评估', '亲子缘分解读', '婚前相性评估'],
+                  ['Phân tích độ hợp tình cảm', 'Đánh giá hợp tác khởi nghiệp', 'Luận duyên cha mẹ – con cái', 'Đánh giá hợp nhau trước hôn nhân'],
+                ).map(item => (
                   <span key={item} style={{
                     fontSize: '12px', padding: '5px 14px', borderRadius: '20px',
                     background: theme === 'dark' ? 'rgba(212,168,67,0.08)' : 'rgba(212,168,67,0.12)',
@@ -1074,7 +1109,7 @@ export default function HomePage() {
                   color: c.goldSolid,
                   cursor: 'pointer',
                 }}>
-                开始合盘分析
+                {tr('开始合盘分析', 'Bắt đầu phân tích hợp hôn')}
               </motion.button>
             </FadeIn>
           </div>
@@ -1084,21 +1119,21 @@ export default function HomePage() {
       {/* ══ 最终 CTA ══════════════════════════════════════ */}
       <section className="relative z-10 py-40 px-6 text-center" style={{ background: c.altSection }}>
         <FadeIn>
-          <p className="text-[10px] tracking-[0.6em] uppercase mb-6" style={{ color: c.tagText }}>开始你的命盘之旅</p>
+          <p className="text-[10px] tracking-[0.6em] uppercase mb-6" style={{ color: c.tagText }}>{tr('开始你的命盘之旅', 'Bắt đầu hành trình lá số của bạn')}</p>
           <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-8 tracking-tight leading-tight`}
             style={{ fontSize: 'clamp(32px, 5vw, 60px)' }}>
-            你的紫微命盘<br />等你解读
+            {tr('你的紫微命盘', 'Lá số Tử Vi của bạn')}<br />{tr('等你解读', 'đang chờ được giải')}
           </h2>
           <p className="text-sm mb-10 max-w-md mx-auto leading-relaxed" style={{ color: c.textSecond }}>
-            输入出生年月日时，在几秒内生成你的专属命盘<br />
-            再由 AI 按倪海厦体系为你深度解读
+            {tr('输入出生年月日时，在几秒内生成你的专属命盘', 'Nhập ngày giờ sinh, vài giây là có lá số của riêng bạn')}<br />
+            {tr('再由 AI 按倪海厦体系为你深度解读', 'rồi AI sẽ luận giải chuyên sâu theo hệ Nghê Hải Hạ')}
           </p>
           <motion.button
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/chart')}
             className="px-14 py-4 font-semibold text-base tracking-widest rounded-full"
             style={{ background: c.ctaBg, color: c.ctaText }}>
-            免费起盘
+            {tr('免费起盘', 'Lập lá số miễn phí')}
           </motion.button>
           <div className="mt-4 flex flex-wrap gap-3 justify-center">
             <motion.a
@@ -1111,7 +1146,7 @@ export default function HomePage() {
                 background: 'transparent',
                 textDecoration: 'none',
               }}>
-              ✦ 紫微斗数知识库 →
+              ✦ {tr('紫微斗数知识库', 'Kho kiến thức Tử Vi Đẩu Số')} →
             </motion.a>
             <motion.a
               href="/library"
@@ -1123,7 +1158,7 @@ export default function HomePage() {
                 background: 'transparent',
                 textDecoration: 'none',
               }}>
-              📜 古籍原典库 →
+              📜 {tr('古籍原典库', 'Thư viện cổ thư')} →
             </motion.a>
           </div>
         </FadeIn>
@@ -1137,10 +1172,10 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto mb-8">
           <div className="text-[9px] tracking-[0.3em] text-center mb-4 uppercase"
             style={{ color: c.textMuted, opacity: 0.6 }}>
-            倪师方法论 · 学术体系
+            {tr('倪师方法论 · 学术体系', 'Phương pháp luận thầy Nghê · hệ thống học thuật')}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            {SECTIONS.map(s => {
+            {sections.map(s => {
               const ready = s.status === 'ready';
               return (
                 <a
@@ -1162,7 +1197,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-[9px] tracking-wider"
                     style={{ color: ready ? '#10b981' : c.textMuted }}>
-                    {ready ? '✓ 已上线' : `${s.when} 开放`}
+                    {ready ? tr('✓ 已上线', '✓ Đã ra mắt') : tr(`${s.when} 开放`, `Mở vào ${s.when.toLowerCase()}`)}
                   </div>
                 </a>
               );
@@ -1172,17 +1207,17 @@ export default function HomePage() {
 
         <div className="text-center">
           <p className="text-[10px] tracking-wider mb-3" style={{ color: c.footerText }}>
-            紫微命盘 · 基于倪海厦正宗体系 · 仅供参考，命运掌握在自己手中
+            {tr('紫微命盘 · 基于倪海厦正宗体系 · 仅供参考，命运掌握在自己手中', 'Lá Số Tử Vi · theo hệ chính tông Nghê Hải Hạ · chỉ để tham khảo, vận mệnh nằm trong tay bạn')}
           </p>
           <p className="text-[10px] tracking-wider mb-3 max-w-2xl mx-auto leading-relaxed"
             style={{ color: c.footerText, opacity: 0.85 }}>
-            本平台基于中国传统文化研究，仅提供学习参考。<br className="sm:hidden" />
-            不构成任何医疗、投资、法律或重大决策建议。
+            {tr('本平台基于中国传统文化研究，仅提供学习参考。', 'Nền tảng dựa trên nghiên cứu văn hóa truyền thống Trung Hoa, chỉ dùng để học tập tham khảo.')}<br className="sm:hidden" />
+            {tr('不构成任何医疗、投资、法律或重大决策建议。', ' Không cấu thành lời khuyên y tế, đầu tư, pháp lý hay cho các quyết định lớn.')}
           </p>
           <p className="text-[10px] tracking-wider" style={{ color: c.footerText }}>
-            <a href="/terms" style={{ color: c.footerText, textDecoration: 'underline' }}>服务条款</a>
+            <a href="/terms" style={{ color: c.footerText, textDecoration: 'underline' }}>{tr('服务条款', 'Điều khoản dịch vụ')}</a>
             {' · '}
-            <a href="/privacy" style={{ color: c.footerText, textDecoration: 'underline' }}>隐私政策</a>
+            <a href="/privacy" style={{ color: c.footerText, textDecoration: 'underline' }}>{tr('隐私政策', 'Chính sách quyền riêng tư')}</a>
           </p>
         </div>
       </footer>

@@ -3,9 +3,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ScrollIntro from '@/components/ScrollIntro';
+import { useLocale } from '@/components/LocaleProvider';
 
 export default function PreviewPage() {
   const router = useRouter();
+  const { tr } = useLocale();
   // replayKey 用于强制重置 ScrollIntro（用户点"再播放一次"时）
   const [replayKey, setReplayKey] = useState(0);
   const [done, setDone] = useState(false);
@@ -37,7 +39,7 @@ export default function PreviewPage() {
             marginBottom: '16px',
             fontWeight: 600,
           }}>
-            紫微卷轴 · 开场预览
+            {tr('紫微卷轴 · 开场预览', 'Cuộn giấy Tử Vi · xem trước màn mở đầu')}
           </h1>
           <p style={{
             fontSize: '14px', color: '#a89878',
@@ -46,8 +48,8 @@ export default function PreviewPage() {
             marginBottom: '40px',
             fontFamily: '"STKaiti", "Kaiti SC", serif',
           }}>
-            刚才看到的卷轴效果会在每次进入主页时缓缓铺开。<br />
-            如果满意，告诉我，我把它接到主页 / 上线。
+            {tr('刚才看到的卷轴效果会在每次进入主页时缓缓铺开。', 'Hiệu ứng cuộn giấy vừa rồi sẽ từ từ mở ra mỗi lần vào trang chủ.')}<br />
+            {tr('如果满意，告诉我，我把它接到主页 / 上线。', 'Nếu thấy ổn, hãy báo để gắn nó vào trang chủ / đưa lên mạng.')}
           </p>
 
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '24px' }}>
@@ -65,7 +67,7 @@ export default function PreviewPage() {
                 fontWeight: 600,
               }}
             >
-              再 播 放 一 次
+              {tr('再 播 放 一 次', 'Phát lại')}
             </button>
             <button
               onClick={() => router.push('/')}
@@ -80,7 +82,7 @@ export default function PreviewPage() {
                 cursor: 'pointer',
               }}
             >
-              进 入 原 版 首 页
+              {tr('进 入 原 版 首 页', 'Vào trang chủ bản gốc')}
             </button>
           </div>
 
@@ -89,11 +91,11 @@ export default function PreviewPage() {
             letterSpacing: '0.15em',
             display: 'flex', gap: '20px',
           }}>
-            <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>原版 ↗</Link>
+            <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>{tr('原版', 'Bản gốc')} ↗</Link>
             <span>·</span>
-            <Link href="/chart" style={{ color: 'inherit', textDecoration: 'none' }}>命盘</Link>
+            <Link href="/chart" style={{ color: 'inherit', textDecoration: 'none' }}>{tr('命盘', 'Lá số')}</Link>
             <span>·</span>
-            <Link href="/heming" style={{ color: 'inherit', textDecoration: 'none' }}>合盘</Link>
+            <Link href="/heming" style={{ color: 'inherit', textDecoration: 'none' }}>{tr('合盘', 'Hợp hôn')}</Link>
           </div>
 
           {/* 时间轴说明 */}
@@ -109,13 +111,13 @@ export default function PreviewPage() {
             fontFamily: '"STKaiti", serif',
             textAlign: 'left',
           }}>
-            <div style={{ color: '#c89647', marginBottom: '12px', letterSpacing: '0.2em', fontSize: '11px' }}>动画时间轴</div>
-            <div>· 0.0 ~ 1.7 s &nbsp;&nbsp;卷轴从中央向两侧展开</div>
-            <div>· 1.9 ~ 2.7 s &nbsp;&nbsp;宣纸内容浮现（标题 + 副标 + 朱砂印）</div>
-            <div>· 2.7 ~ 3.5 s &nbsp;&nbsp;停留欣赏</div>
-            <div>· 3.5 ~ 4.2 s &nbsp;&nbsp;整体淡出，进入主页</div>
+            <div style={{ color: '#c89647', marginBottom: '12px', letterSpacing: '0.2em', fontSize: '11px' }}>{tr('动画时间轴', 'Dòng thời gian hiệu ứng')}</div>
+            <div>· 0.0 ~ 1.7 s &nbsp;&nbsp;{tr('卷轴从中央向两侧展开', 'Cuộn giấy mở từ giữa ra hai bên')}</div>
+            <div>· 1.9 ~ 2.7 s &nbsp;&nbsp;{tr('宣纸内容浮现（标题 + 副标 + 朱砂印）', 'Nội dung trên giấy hiện ra (tiêu đề + phụ đề + ấn son)')}</div>
+            <div>· 2.7 ~ 3.5 s &nbsp;&nbsp;{tr('停留欣赏', 'Dừng lại để ngắm')}</div>
+            <div>· 3.5 ~ 4.2 s &nbsp;&nbsp;{tr('整体淡出，进入主页', 'Mờ dần toàn bộ, vào trang chủ')}</div>
             <div style={{ marginTop: '12px', color: '#6e6048', fontSize: '11px' }}>
-              用户随时可点右下「跳过」直接进入主页。
+              {tr('用户随时可点右下「跳过」直接进入主页。', 'Người dùng có thể nhấn «Bỏ qua» ở góc dưới bên phải để vào thẳng trang chủ.')}
             </div>
           </div>
         </main>

@@ -6,6 +6,9 @@ import { formToBirthInfo } from '@/lib/ziwei/share';
 import { generateChart as buildChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart } from '@/lib/ziwei/types';
 import { useTheme } from '@/components/ThemeProvider';
+import { useLocale, LocaleSwitch } from '@/components/LocaleProvider';
+import AiSettingsModal from '@/components/AiSettingsModal';
+import { aiHeaders } from '@/lib/ai/config';
 
 // ─── AiContent 渲染器（与 InsightPanel 一致）────────────────
 function AiContent({ text, streaming }: { text: string; streaming?: boolean }) {
@@ -51,6 +54,8 @@ export default function HemingPage() {
   const router = useRouter();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const { tr } = useLocale();
+  const [showSettings, setShowSettings] = useState(false);
 
   // ─── 双方命盘状态 ─────────────────────────────────────────
   const [chartA, setChartA] = useState<ZiweiChart | null>(null);
@@ -87,7 +92,7 @@ export default function HemingPage() {
   const runAnalysis = useCallback(async (q?: string) => {
     setFormError(null);
     if (!isFormReady(formA) || !isFormReady(formB)) {
-      setFormError('请先填写双方完整出生信息');
+      setFormError(tr('请先填写双方完整出生信息', 'Vui lòng điền đầy đủ thông tin ngày sinh của cả hai người'));
       return;
     }
     setAnalyzing(true);
@@ -114,10 +119,10 @@ export default function HemingPage() {
 
       const res = await fetch('/api/heming', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: aiHeaders(),
         body: JSON.stringify({ chartA: cA, chartB: cB, question: q ?? undefined }),
       });
-      if (res.status === 404) { setApiMissing(true); throw new Error('api-missing'); }
+      if (res.status === 404 || res.status === 401) { setApiMissing(true); throw new Error('api-missing'); }
       if (!res.ok || !res.body) throw new Error();
 
       const reader = res.body.getReader();
@@ -146,7 +151,7 @@ export default function HemingPage() {
     } finally {
       setAnalyzing(false);
     }
-  }, [chartA, chartB, formA, formB, generateChart]);
+  }, [chartA, chartB, formA, formB, generateChart, tr]);
 
   const cardStyle = {
     background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.9)',
@@ -178,13 +183,29 @@ export default function HemingPage() {
           }}
         >
           <span style={{ fontSize: '16px' }}>‹</span>
-          <span>返回</span>
+          <span>{tr('返回', 'Quay lại')}</span>
         </button>
         <div style={{ width: '1px', height: '20px', background: 'var(--bdr-med)' }} />
-        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>合盘分析</span>
+        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>{tr('合盘分析', 'Phân tích hợp hôn')}</span>
         <div style={{ flex: 1 }} />
-        <span style={{ fontSize: '11px', color: 'var(--tx-3)' }}>感情 · 合伙 · 亲子 · 朋友</span>
+        <span className="heming-tags" style={{ fontSize: '11px', color: 'var(--tx-3)' }}>
+          {tr('感情 · 合伙 · 亲子 · 朋友', 'Tình cảm · Hợp tác · Cha con · Bạn bè')}
+        </span>
+        <button
+          onClick={() => setShowSettings(true)}
+          title={tr('AI 设置', 'Cấu hình AI')}
+          aria-label={tr('AI 设置', 'Cấu hình AI')}
+          style={{
+            width: 30, height: 30, borderRadius: 8, fontSize: 15, cursor: 'pointer',
+            border: '1px solid var(--ac-bdr)', color: 'var(--ac)', background: 'var(--ac-bg)',
+          }}
+        >
+          ⚙
+        </button>
+        <LocaleSwitch />
       </header>
+
+      <AiSettingsModal open={showSettings} onClose={() => setShowSettings(false)} />
 
       {/* 主体 */}
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '32px 24px 80px' }}>
@@ -193,10 +214,13 @@ export default function HemingPage() {
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <div style={{ fontSize: '28px', color: 'var(--ac)', opacity: 0.15, marginBottom: '12px' }}>☯</div>
           <h1 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '0.15em', color: 'var(--tx-0)', marginBottom: '8px' }}>
-            紫微合盘
+            {tr('紫微合盘', 'Hợp hôn Tử Vi')}
           </h1>
           <p style={{ fontSize: '13px', color: 'var(--tx-3)', lineHeight: 1.6 }}>
-            输入两个人的出生信息，AI 基于倪海厦体系分析双方命盘的缘分匹配度、感情走向与相处建议
+            {tr(
+              '输入两个人的出生信息，AI 基于倪海厦体系分析双方命盘的缘分匹配度、感情走向与相处建议',
+              'Nhập thông tin ngày sinh của hai người, AI dựa trên hệ Nghê Hải Hạ phân tích mức độ hợp duyên, chiều hướng tình cảm và lời khuyên chung sống giữa hai lá số',
+            )}
           </p>
         </div>
 
@@ -205,7 +229,7 @@ export default function HemingPage() {
           className="heming-grid">
           {/* 甲方 */}
           <div style={cardStyle}>
-            <span style={labelStyle}>甲方 — A</span>
+            <span style={labelStyle}>{tr('甲方 — A', 'Người thứ nhất — A')}</span>
             <BirthForm
               hideSubmit
               onSubmit={() => {}}
@@ -215,7 +239,7 @@ export default function HemingPage() {
 
           {/* 乙方 */}
           <div style={cardStyle}>
-            <span style={labelStyle}>乙方 — B</span>
+            <span style={labelStyle}>{tr('乙方 — B', 'Người thứ hai — B')}</span>
             <BirthForm
               hideSubmit
               onSubmit={() => {}}
@@ -236,15 +260,15 @@ export default function HemingPage() {
           {/* 区块标题 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: (analysis || analyzing) ? '20px' : '24px' }}>
             <span style={{ color: 'var(--ac)', opacity: 0.6 }}>◉</span>
-            <span style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'var(--tx-3)' }}>合盘分析 · HEMING</span>
+            <span style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'var(--tx-3)' }}>{tr('合盘分析 · HEMING', 'Phân tích hợp hôn · HEMING')}</span>
           </div>
 
           {/* 状态分支 */}
           {!analysis && !analyzing && (
             <div style={{ textAlign: 'center', padding: '32px 0' }}>
               <div style={{ fontSize: '13px', color: 'var(--tx-3)', marginBottom: '24px', lineHeight: 1.7 }}>
-                填好双方出生信息后，点击下方按钮<br />
-                AI 将基于倪海厦体系深度分析两人缘分匹配度
+                {tr('填好双方出生信息后，点击下方按钮', 'Điền xong thông tin ngày sinh của hai người rồi nhấn nút bên dưới,')}<br />
+                {tr('AI 将基于倪海厦体系深度分析两人缘分匹配度', 'AI sẽ phân tích chuyên sâu mức độ hợp duyên của hai người theo hệ Nghê Hải Hạ')}
               </div>
               <button
                 onClick={() => runAnalysis()}
@@ -259,7 +283,7 @@ export default function HemingPage() {
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
               >
-                开始合盘分析
+                {tr('开始合盘分析', 'Bắt đầu phân tích hợp hôn')}
               </button>
               {formError && (
                 <div style={{ marginTop: '20px', fontSize: '13px', color: '#dc2626' }}>
@@ -276,7 +300,7 @@ export default function HemingPage() {
                 border: '2px solid var(--bdr-med)', borderTopColor: 'var(--ac)',
                 borderRadius: '50%', animation: 'spin 0.8s linear infinite',
               }} />
-              正在对比双方命盘…
+              {tr('正在对比双方命盘…', 'Đang đối chiếu hai lá số…')}
             </div>
           )}
 
@@ -285,8 +309,11 @@ export default function HemingPage() {
           {analysisError && (
             <div style={{ padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--bdr)', background: 'var(--bg-card)', fontSize: '13px', color: 'var(--tx-2)', marginTop: '12px' }}>
               {apiMissing
-                ? '开源版不含合盘 AI 分析接口（/api/heming），需要你自己实现后才能用。两人的命盘可以分别到「排盘」页（/chart）查看。'
-                : '分析暂时不可用，请重试。'}
+                ? tr(
+                  '需要有效的 Anthropic API 密钥才能合盘。点右上角 ⚙ 填入密钥；密钥只存在你的浏览器里。',
+                  'Cần có API key Anthropic hợp lệ để phân tích hợp hôn. Nhấn ⚙ ở góc trên để nhập key; key chỉ lưu trong trình duyệt của bạn.',
+                )
+                : tr('分析暂时不可用，请重试。', 'Tạm thời chưa phân tích được, vui lòng thử lại.')}
             </div>
           )}
         </div>
@@ -295,18 +322,24 @@ export default function HemingPage() {
         {analysis && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
             <div style={{ fontSize: '11px', letterSpacing: '0.2em', color: 'var(--tx-3)', marginBottom: '4px' }}>
-              针对此次合盘继续追问
+              {tr('针对此次合盘继续追问', 'Hỏi thêm về lần hợp hôn này')}
             </div>
 
             {/* 快捷问题 */}
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {[
+              {tr([
                 '感情匹配度如何？',
                 '适合合伙创业吗？',
                 '两人结婚是否合适？',
                 '哪方面最容易产生矛盾？',
                 '财运是否互补？',
-              ].map(q => (
+              ], [
+                'Tình cảm hợp nhau đến mức nào?',
+                'Có hợp làm ăn chung không?',
+                'Hai người có nên kết hôn không?',
+                'Dễ mâu thuẫn nhất ở mặt nào?',
+                'Tài vận có bổ trợ cho nhau không?',
+              ]).map(q => (
                 <button
                   key={q}
                   onClick={() => { setQuestion(q); runAnalysis(q); }}
@@ -335,7 +368,7 @@ export default function HemingPage() {
                 value={question}
                 onChange={e => setQuestion(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !analyzing) runAnalysis(question || undefined); }}
-                placeholder="继续追问，如：哪几年是两人感情关键期？"
+                placeholder={tr('继续追问，如：哪几年是两人感情关键期？', 'Hỏi tiếp, ví dụ: những năm nào là giai đoạn then chốt của hai người?')}
                 disabled={analyzing}
                 className="input-base"
                 style={{ fontSize: '13px', flex: 1 }}
@@ -352,7 +385,7 @@ export default function HemingPage() {
                   transition: 'all 0.15s', whiteSpace: 'nowrap',
                 }}
               >
-                {analyzing ? '分析中…' : '继续追问'}
+                {analyzing ? tr('分析中…', 'Đang phân tích…') : tr('继续追问', 'Hỏi tiếp')}
               </button>
             </div>
           </div>
@@ -362,6 +395,7 @@ export default function HemingPage() {
       <style>{`
         @media (max-width: 680px) {
           .heming-grid { grid-template-columns: 1fr !important; }
+          .heming-tags { display: none; }
         }
       `}</style>
     </div>

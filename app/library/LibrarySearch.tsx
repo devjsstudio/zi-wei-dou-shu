@@ -8,8 +8,10 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from '@/components/LocaleProvider';
 
 export default function LibrarySearch() {
+  const { tr } = useLocale();
   const [q, setQ] = useState('');
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -36,7 +38,10 @@ export default function LibrarySearch() {
         value={q}
         onChange={e => setQ(e.target.value)}
         onKeyDown={e => e.key === 'Enter' && submit()}
-        placeholder="搜索古籍原文，如：七杀朝斗 / 双禄朝垣 / 化忌"
+        placeholder={tr(
+          '搜索古籍原文，如：七杀朝斗 / 双禄朝垣 / 化忌',
+          'Tìm trong nguyên văn (gõ chữ Hán), vd: 七杀朝斗 / 双禄朝垣 / 化忌',
+        )}
         style={{
           flex: 1,
           padding: '10px 14px',
@@ -63,7 +68,7 @@ export default function LibrarySearch() {
           opacity: q.trim() ? 1 : 0.5,
         }}
       >
-        {isPending ? '…' : '搜索'}
+        {isPending ? '…' : tr('搜索', 'Tìm')}
       </button>
     </div>
   );

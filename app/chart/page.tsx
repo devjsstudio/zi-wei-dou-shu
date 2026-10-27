@@ -3,8 +3,8 @@ import { useState } from 'react';
 import BirthForm from '@/components/BirthForm';
 import ChartBoard from '@/components/ChartBoard';
 import InsightPanel from '@/components/InsightPanel';
-import TimeNav, { type TimeView } from '@/components/TimeNav';
 import { generateChart } from '@/lib/ziwei/algorithm';
+import { useLocale, LocaleSwitch } from '@/components/LocaleProvider';
 import type { BirthInfo, ZiweiChart, Palace } from '@/lib/ziwei/types';
 
 /**
@@ -20,18 +20,20 @@ import type { BirthInfo, ZiweiChart, Palace } from '@/lib/ziwei/types';
 export default function ChartPage() {
   const [chart, setChart] = useState<ZiweiChart | null>(null);
   const [selectedPalace, setSelectedPalace] = useState<Palace | null>(null);
-  const [view, setView] = useState<TimeView>('mingpan');
-  const [liunianYear, setLiunianYear] = useState(() => new Date().getFullYear());
+  const { m, term } = useLocale();
 
   // ── 未起盘：展示出生信息表单 ──
   if (!chart) {
     return (
       <main style={{ maxWidth: 720, margin: '0 auto', padding: '48px 20px' }}>
-        <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>紫微斗数排盘</h1>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+          <LocaleSwitch />
+        </div>
+        <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>{m.chartPage.title}</h1>
         <p style={{ color: '#888', marginBottom: 32, fontSize: 14, lineHeight: 1.7 }}>
-          输入出生年月日时，开源排盘引擎即时生成命盘。
+          {m.chartPage.intro}
           <br />
-          （本页为引擎 Demo，完整商业版界面不在开源范围；排盘内核完全开放。）
+          {m.chartPage.introNote}
         </p>
         <BirthForm onSubmit={(info: BirthInfo) => setChart(generateChart(info))} />
       </main>
@@ -40,36 +42,53 @@ export default function ChartPage() {
 
   // ── 已起盘：命盘 + 解读 ──
   return (
-    <main style={{ maxWidth: 1280, margin: '0 auto', padding: '24px 16px' }}>
-      <button
-        type="button"
-        onClick={() => { setChart(null); setSelectedPalace(null); }}
-        style={{
-          marginBottom: 16, padding: '6px 14px', cursor: 'pointer',
-          border: '1px solid #ccc', borderRadius: 8, background: 'transparent',
-        }}
-      >
-        ← 重新起盘
-      </button>
+    <main style={{ maxWidth: 1360, margin: '0 auto', padding: '24px 16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          onClick={() => { setChart(null); setSelectedPalace(null); }}
+          style={{
+            padding: '7px 16px', cursor: 'pointer', fontSize: 13,
+            border: '1px solid var(--t-border)', borderRadius: 999,
+            background: 'var(--t-card)', color: 'var(--t-text2)',
+          }}
+        >
+          {m.chartPage.restart}
+        </button>
 
-      <TimeNav
-        chart={chart}
-        view={view}
-        liunianYear={liunianYear}
-        onViewChange={setView}
-        onYearChange={setLiunianYear}
-      />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, flex: 1, justifyContent: 'center', minWidth: 0 }}>
+          {chart.birthInfo.name && (
+            <span style={{ fontWeight: 700, color: 'var(--t-gold)', letterSpacing: '0.05em' }}>{chart.birthInfo.name}</span>
+          )}
+          <span style={{ color: 'var(--t-faint)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {`${chart.birthInfo.year}-${String(chart.birthInfo.month).padStart(2, '0')}-${String(chart.birthInfo.day).padStart(2, '0')} · ${term(chart.wuxingJuName)}${chart.yinYangGender ? ` · ${term(chart.yinYangGender)}` : ''}`}
+          </span>
+        </div>
+
+        <LocaleSwitch />
+      </div>
 
       <div
+        className="chart-layout"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 380px)',
-          gap: 20, marginTop: 16, alignItems: 'start',
+          gridTemplateColumns: 'minmax(0, 1fr) 380px',
+          gap: 20, marginTop: 8, alignItems: 'stretch',
         }}
       >
         <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
-        <InsightPanel chart={chart} selectedPalace={selectedPalace} />
+        <div style={{ position: 'sticky', top: 16, height: 'calc(100vh - 110px)' }}>
+          <InsightPanel chart={chart} selectedPalace={selectedPalace} />
+        </div>
       </div>
+
+      {/* 窄屏：解读面板移到命盘下方，不再并排挤压命盘 */}
+      <style>{`
+        @media (max-width: 920px) {
+          .chart-layout { grid-template-columns: 1fr !important; }
+          .chart-layout > div:last-child { position: static !important; height: 70vh !important; }
+        }
+      `}</style>
     </main>
   );
 }

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { BRANCHES } from '../../lib/ziwei/constants';
 import { generateChart } from '../../lib/ziwei/algorithm';
 import { formToBirthInfo } from '../../lib/ziwei/share';
+import { CLOCK_MERIDIAN } from '../../lib/ziwei/cities-vn';
 import type { BirthInfo } from '../../lib/ziwei/types';
 import type { BirthFormState } from '../../components/BirthForm';
 
@@ -41,7 +42,7 @@ function formAt(clockHour: string): BirthFormState {
     unknownTime: false,
     province: '',
     city: '',
-    longitude: 120,
+    longitude: CLOCK_MERIDIAN, // 位于标准经线上 = 不做经度修正
     gender: 'male',
   };
 }

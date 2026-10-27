@@ -1,10 +1,11 @@
 import type { BirthFormState } from '@/components/BirthForm';
 import type { BirthInfo } from './types';
+import { CLOCK_MERIDIAN } from './cities-vn';
 
-/** 根据北京时间 + 经度计算真太阳时时辰支 (0-11) */
+/** 根据越南钟表时间（UTC+7）+ 经度计算真太阳时时辰支 (0-11) */
 export function calcTrueSolarBranch(clockHour: number, clockMinute: number, longitude: number): number {
   const clockMins = clockHour * 60 + clockMinute;
-  const offset = (longitude - 120) * 4;
+  const offset = (longitude - CLOCK_MERIDIAN) * 4;
   const solar = ((clockMins + offset) % 1440 + 1440) % 1440;
   if (solar >= 1380 || solar < 60) return 0;
   return Math.floor((solar - 60) / 120) + 1;
@@ -62,7 +63,7 @@ export function formToSearchParams(form: BirthFormState): URLSearchParams {
   }
   if (form.province) p.set('p', form.province);
   if (form.city) p.set('c', form.city);
-  if (form.longitude && form.longitude !== 120) p.set('lo', String(form.longitude));
+  if (form.longitude && form.longitude !== CLOCK_MERIDIAN) p.set('lo', String(form.longitude));
   p.set('g', form.gender === 'male' ? 'm' : 'f');
   return p;
 }
@@ -83,7 +84,7 @@ export function searchParamsToForm(params: URLSearchParams): Partial<BirthFormSt
     clockMinute: params.get('mi') || '0',
     province: params.get('p') || '',
     city: params.get('c') || '',
-    longitude: parseFloat(params.get('lo') || '120'),
+    longitude: parseFloat(params.get('lo') || String(CLOCK_MERIDIAN)),
     gender: params.get('g') === 'f' ? 'female' : 'male',
   };
 }
