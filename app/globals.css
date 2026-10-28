@@ -4,29 +4,30 @@
 
 /* ─── 2.0 设计系统 Token ─────────────────────────────────── */
 :root {
-  /* 字体 */
-  --font: -apple-system, 'PingFang SC', 'Helvetica Neue', 'Segoe UI', sans-serif;
+  /* 字体（Mystical Oriental Luxury）：正文 Be Vietnam Pro，标题 Noto Serif */
+  --font: 'Be Vietnam Pro', -apple-system, 'PingFang SC', 'Helvetica Neue', 'Segoe UI', sans-serif;
+  --font-serif: 'Noto Serif', 'Songti SC', Georgia, 'Times New Roman', serif;
   --font-mono: 'SF Mono', 'Menlo', 'Noto Sans Mono', 'Consolas', monospace;
 
-  /* 背景层级 */
-  --bg-0: #FAFAF9;
-  --bg-1: #F4F3EF;
-  --bg-2: #ECEAE4;
-  --bg-inv: #0D0D0B;
+  /* 背景层级（暖宣纸色系，统一冷暖） */
+  --bg-0: #FBF8F1;
+  --bg-1: #F4EEE1;
+  --bg-2: #EBE3D2;
+  --bg-inv: #141009;
 
-  /* 文字层级 */
-  --tx-0: #0D0D0B;
-  --tx-1: #1A1A18;
-  --tx-2: #4A4A45;
-  --tx-3: #8A8A82;
-  --tx-inv: #F0EDE8;
-  --tx-inv2: rgba(240,237,232,0.65);
+  /* 文字层级（暖墨黑，去冷灰） */
+  --tx-0: #1A140A;
+  --tx-1: #27201A;
+  --tx-2: #574E40;
+  --tx-3: #938A77;
+  --tx-inv: #F3EEE2;
+  --tx-inv2: rgba(243,238,226,0.65);
 
-  /* 唯一强调色：墨金 */
-  --ac:     #B8922A;
-  --ac-dim: #7A5F1A;
-  --ac-bg:  rgba(184,146,42,0.07);
-  --ac-bdr: rgba(184,146,42,0.22);
+  /* 唯一强调色：墨金（更醇厚的古金） */
+  --ac:     #AE811C;
+  --ac-dim: #87610F;
+  --ac-bg:  rgba(174,129,28,0.08);
+  --ac-bdr: rgba(174,129,28,0.26);
 
   /* 四化语义色（仅用于命盘数据，不用于UI装饰） */
   --lu:   #2D7A4A;
@@ -34,20 +35,20 @@
   --ke:   #8A7018;
   --ji:   #A83228;
 
-  /* 边框 */
-  --bdr:      rgba(0,0,0,0.07);
-  --bdr-med:  rgba(0,0,0,0.11);
-  --bdr-heavy:rgba(0,0,0,0.18);
+  /* 边框（暖褐调，与宣纸底呼应） */
+  --bdr:      rgba(62,46,16,0.10);
+  --bdr-med:  rgba(62,46,16,0.16);
+  --bdr-heavy:rgba(62,46,16,0.24);
 
-  /* 阴影 */
-  --sh-xs: 0 1px 2px rgba(0,0,0,0.05);
-  --sh-sm: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-  --sh-md: 0 4px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
-  --sh-lg: 0 12px 40px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
+  /* 阴影（暖调投影） */
+  --sh-xs: 0 1px 2px rgba(62,46,16,0.06);
+  --sh-sm: 0 2px 8px rgba(62,46,16,0.07), 0 1px 3px rgba(62,46,16,0.05);
+  --sh-md: 0 4px 20px rgba(62,46,16,0.09), 0 2px 6px rgba(62,46,16,0.06);
+  --sh-lg: 0 12px 40px rgba(62,46,16,0.12), 0 4px 12px rgba(62,46,16,0.07);
 
   /* 卡片/内容块背景 */
-  --bg-card: #FFFFFF;
-  --bg-page: #fbf6e8;
+  --bg-card: #FFFDF8;
+  --bg-page: #FAF3E3;
 
   /* 圆角 */
   --r-xs:  4px;
@@ -69,36 +70,46 @@
   --t-card:    var(--bg-card);
 }
 
-/* ─── 暗色模式 Token 覆盖 ──────────────────────────────── */
+/* ─── 暗色模式 Token（Mystical Oriental Luxury，取自 Stitch 设计系统） ─── */
 [data-theme="dark"] {
-  --bg-0: #020810;
-  --bg-1: #0a1020;
-  --bg-2: #141e30;
-  --bg-inv: #f0ede8;
+  /* 背景层级：深靛蓝 */
+  --bg-0: #0a0e18;   /* surface-container-lowest，页面最底 */
+  --bg-1: #0f131d;   /* background / surface */
+  --bg-2: #1c1f2a;   /* surface-container */
+  --bg-inv: #f3eee2;
 
-  --tx-0: #e8eef6;
-  --tx-1: #dce4f0;
-  --tx-2: #9db0d0;
-  --tx-3: #6a7a96;
-  --tx-inv: #0d0d0b;
-  --tx-inv2: rgba(13,13,11,0.65);
+  /* 文字层级 */
+  --tx-0: #dfe2f1;   /* on-surface，淡紫白 */
+  --tx-1: #dfe2f1;
+  --tx-2: #d0c5af;   /* on-surface-variant，暖灰 */
+  --tx-3: #99907c;   /* outline，静音文字 */
+  --tx-inv: #0f131d;
+  --tx-inv2: rgba(15,19,29,0.65);
 
-  --ac:     #d4a843;
-  --ac-dim: #e8c060;
-  --ac-bg:  rgba(212,168,67,0.10);
-  --ac-bdr: rgba(212,168,67,0.25);
+  /* 强调色：墨金 */
+  --ac:     #f2ca50;   /* primary */
+  --ac-dim: #d4af37;   /* primary-container，更沉的金（hover/副标题） */
+  --ac-bg:  rgba(242,202,80,0.10);
+  --ac-bdr: rgba(242,202,80,0.26);
 
-  --bdr:      rgba(255,255,255,0.07);
-  --bdr-med:  rgba(255,255,255,0.12);
-  --bdr-heavy:rgba(255,255,255,0.20);
+  /* 四化语义色（暗底加亮，取自 Stitch tertiary/secondary/error） */
+  --lu:   #58e7aa;   /* 禄 · 青绿 */
+  --quan: #8fb6ff;   /* 权 · 亮蓝 */
+  --ke:   #e9c349;   /* 科 · 金黄 */
+  --ji:   #ffb4ab;   /* 忌 · 暖红 */
 
-  --sh-xs: 0 1px 2px rgba(0,0,0,0.3);
-  --sh-sm: 0 2px 8px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
-  --sh-md: 0 4px 20px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.35);
-  --sh-lg: 0 12px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
+  /* 边框：暖灰（outline 调） */
+  --bdr:      rgba(153,144,124,0.16);
+  --bdr-med:  rgba(153,144,124,0.26);
+  --bdr-heavy:rgba(153,144,124,0.38);
 
-  --bg-card: rgba(255,255,255,0.04);
-  --bg-page: #020810;
+  --sh-xs: 0 1px 2px rgba(0,0,0,0.35);
+  --sh-sm: 0 2px 8px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.35);
+  --sh-md: 0 4px 24px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.4);
+  --sh-lg: 0 16px 48px rgba(0,0,0,0.65), 0 4px 12px rgba(0,0,0,0.45);
+
+  --bg-card: #1c1f2a;   /* surface-container，实色卡片 */
+  --bg-page: #0f131d;
 }
 
 /* ─── 全局基础 ───────────────────────────────────────────── */
@@ -118,6 +129,30 @@ body {
   line-height: 1.6;
 }
 
+/* 标题统一用衬线体 Noto Serif，呼应「玄学典籍」质感 */
+h1, h2, h3, .font-serif {
+  font-family: var(--font-serif);
+}
+.font-sans { font-family: var(--font); }
+
+/* Material Symbols 图标字体（Stitch 设计用） */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 /* ─── 滚动条 ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-1); }
@@ -125,7 +160,7 @@ body {
 
 /* ─── 选中文字 ───────────────────────────────────────────── */
 ::selection {
-  background: rgba(184,146,42,0.15);
+  background: rgba(174,129,28,0.16);
   color: var(--ac-dim);
 }
 

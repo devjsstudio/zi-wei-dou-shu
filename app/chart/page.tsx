@@ -1,94 +1,104 @@
 'use client';
 import { useState } from 'react';
-import BirthForm from '@/components/BirthForm';
 import ChartBoard from '@/components/ChartBoard';
 import InsightPanel from '@/components/InsightPanel';
-import { generateChart } from '@/lib/ziwei/algorithm';
-import { useLocale, LocaleSwitch } from '@/components/LocaleProvider';
-import type { BirthInfo, ZiweiChart, Palace } from '@/lib/ziwei/types';
+import AppHeader from '@/components/AppHeader';
+import { useStoredChart } from '@/lib/useStoredChart';
+import type { Palace } from '@/lib/ziwei/types';
 
 /**
- * 命盘页 —— 开源版「排盘引擎 Demo」
- *
- * 这是一个最小可运行示例：用本仓库的排盘引擎 generateChart() 配合基础 UI
- * 组件，渲染一张完整紫微命盘 + 基础解读，并支持本命 / 大限 / 流年切换。
- *
- * 说明：线上商业版的完整交互界面（重设计的新 UI、AI 流式解读、合盘、分享
- * 卡片等）不在开源范围内；但排盘内核——安星算法、四化、格局识别、古籍库——
- * 完全开放（见 lib/ziwei/*），可自由二次开发出你自己的界面。
+ * Trang Bảng Lá Số Tương Tác —— render lá số đầy đủ + luận giải AI.
+ * Thông tin sinh được nhập ở Trang Chủ (form "Khởi Bàn An Mệnh"), lưu ở
+ * sessionStorage. Nếu vào thẳng mà chưa có dữ liệu → tự chuyển về Trang Chủ.
  */
 export default function ChartPage() {
-  const [chart, setChart] = useState<ZiweiChart | null>(null);
+  const chart = useStoredChart();
   const [selectedPalace, setSelectedPalace] = useState<Palace | null>(null);
-  const { m, term } = useLocale();
 
-  // ── 未起盘：展示出生信息表单 ──
+  // ── Chưa có lá số: đang chuyển về Trang Chủ ──
   if (!chart) {
     return (
-      <main style={{ maxWidth: 720, margin: '0 auto', padding: '48px 20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
-          <LocaleSwitch />
-        </div>
-        <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>{m.chartPage.title}</h1>
-        <p style={{ color: '#888', marginBottom: 32, fontSize: 14, lineHeight: 1.7 }}>
-          {m.chartPage.intro}
-          <br />
-          {m.chartPage.introNote}
-        </p>
-        <BirthForm onSubmit={(info: BirthInfo) => setChart(generateChart(info))} />
+      <main className="min-h-screen flex flex-col items-center justify-center gap-space-md bg-background text-on-surface-variant">
+        <span className="material-symbols-outlined text-primary text-[40px] animate-spin">progress_activity</span>
+        <p className="font-body-md text-body-md">Đang chuyển về Trang Chủ để lập lá số…</p>
       </main>
     );
   }
 
-  // ── 已起盘：命盘 + 解读 ──
+  const EL = [
+    { c: '#E2E8F0', t: 'Kim (Bạch Kim)' },
+    { c: '#10B981', t: 'Mộc (Thanh Mộc)' },
+    { c: '#38BDF8', t: 'Thủy (Huyền Thủy)' },
+    { c: '#F43F5E', t: 'Hỏa (Chu Sa Hỏa)' },
+    { c: '#F59E0B', t: 'Thổ (Hoàng Thổ)' },
+  ];
+
+  // ── Đã có lá số: Bảng Lá Số Tương Tác ──
   return (
-    <main style={{ maxWidth: 1960, margin: '0 auto', padding: '20px 24px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
-        <button
-          type="button"
-          onClick={() => { setChart(null); setSelectedPalace(null); }}
-          style={{
-            padding: '7px 16px', cursor: 'pointer', fontSize: 13,
-            border: '1px solid var(--t-border)', borderRadius: 999,
-            background: 'var(--t-card)', color: 'var(--t-text2)',
-          }}
-        >
-          {m.chartPage.restart}
-        </button>
+    <div className="bg-background font-body-md text-on-surface min-h-screen selection:bg-primary selection:text-on-primary">
+      <AppHeader active="la-so" />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, flex: 1, justifyContent: 'center', minWidth: 0 }}>
-          {chart.birthInfo.name && (
-            <span style={{ fontWeight: 700, color: 'var(--t-gold)', letterSpacing: '0.05em' }}>{chart.birthInfo.name}</span>
-          )}
-          <span style={{ color: 'var(--t-faint)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {`${chart.birthInfo.year}-${String(chart.birthInfo.month).padStart(2, '0')}-${String(chart.birthInfo.day).padStart(2, '0')} · ${term(chart.wuxingJuName)}${chart.yinYangGender ? ` · ${term(chart.yinYangGender)}` : ''}`}
-          </span>
+      <main className="w-full pt-16 md:pt-20 bg-background min-h-screen">
+        <div className="w-full max-w-[1536px] mx-auto px-margin-mobile md:px-space-lg lg:px-margin py-space-lg">
+          {/* Tiêu đề + hành động */}
+          <div className="flex flex-col xl:flex-row items-start justify-between gap-space-lg mb-space-lg">
+            <div className="flex flex-col gap-1 min-w-0">
+              <div className="flex items-center gap-space-sm flex-wrap">
+                <span className="px-space-sm py-0.5 rounded-full bg-surface-container-high text-secondary font-label-esoteric text-label-esoteric uppercase tracking-wider">Khâm Thiên Giám Tàng Bản</span>
+                <span className="inline-flex items-center gap-1 text-tertiary font-label-sm text-label-sm">
+                  <span className="w-2 h-2 rounded-full bg-tertiary animate-ping" />
+                  Trận Đồ Thần Số Vận Hành
+                </span>
+              </div>
+              <h1 className="font-headline-lg text-[28px] md:text-headline-lg text-primary tracking-tight">Lá Số Tử Vi Đẩu Số Hoàng Cung</h1>
+              <p className="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                Thập Nhị Cung đồ trận kết hợp Thiên Bàn Hoàng Gia. Nhấp vào từng cung vị để chiếu xạ Tam Hợp – Xung Chiếu và nhận mật ngữ giải mã chân truyền.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-space-sm bg-surface-container-low/90 p-space-sm rounded-xl shadow-xl shrink-0">
+              <a href="/" className="group flex items-center gap-2 px-space-md py-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-all text-on-surface">
+                <span className="material-symbols-outlined text-[18px] text-secondary">add_circle</span>
+                <span className="font-label-md text-label-md">Lập Lá Số Khác</span>
+              </a>
+              <button type="button" onClick={() => window.print()} className="group flex items-center gap-2 px-space-md py-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-all text-on-surface">
+                <span className="material-symbols-outlined text-[18px] text-tertiary">print</span>
+                <span className="font-label-md text-label-md">In Lá Số</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Legend ngũ hành */}
+          <div className="flex flex-wrap items-center justify-between gap-space-md bg-surface-container/70 p-space-md rounded-xl mb-space-lg shadow-md">
+            <div className="flex flex-wrap items-center gap-space-lg">
+              <span className="font-label-esoteric text-label-esoteric text-on-surface-variant uppercase">Ngũ Hành Quy Chiếu:</span>
+              {EL.map((e) => (
+                <div key={e.t} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-full" style={{ background: e.c, boxShadow: `0 0 8px ${e.c}` }} />
+                  <span className="font-label-sm text-label-sm" style={{ color: e.c }}>{e.t}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-space-sm text-on-surface-variant font-body-sm text-body-sm">
+              <span className="material-symbols-outlined text-[16px] text-primary">touch_app</span>
+              <span>Nhấp chọn cung để kích hoạt Tam Hợp Cục</span>
+            </div>
+          </div>
+
+          {/* Lưới: bàn lá số (9/12) + luận giải (3/12) */}
+          <div className="grid grid-cols-1 2xl:grid-cols-12 gap-space-lg items-start">
+            <div className="2xl:col-span-8 w-full bg-surface-container-lowest p-2 sm:p-4 rounded-2xl shadow-2xl">
+              <div className="aspect-[4/3.6] md:aspect-[4/3.2]">
+                <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
+              </div>
+            </div>
+            <div className="2xl:col-span-4 w-full">
+              <div className="2xl:sticky 2xl:top-24 h-[600px] 2xl:h-[calc(100vh-130px)]">
+                <InsightPanel chart={chart} selectedPalace={selectedPalace} />
+              </div>
+            </div>
+          </div>
         </div>
-
-        <LocaleSwitch />
-      </div>
-
-      <div
-        className="chart-layout"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1120px) minmax(0, 1fr)',
-          gap: 24, marginTop: 8, alignItems: 'stretch',
-        }}
-      >
-        <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
-        <div style={{ position: 'sticky', top: 16, height: 'calc(100vh - 110px)' }}>
-          <InsightPanel chart={chart} selectedPalace={selectedPalace} />
-        </div>
-      </div>
-
-      {/* 窄屏：解读面板移到命盘下方，不再并排挤压命盘 */}
-      <style>{`
-        @media (max-width: 920px) {
-          .chart-layout { grid-template-columns: 1fr !important; }
-          .chart-layout > div:last-child { position: static !important; height: 70vh !important; }
-        }
-      `}</style>
-    </main>
+      </main>
+    </div>
   );
 }
