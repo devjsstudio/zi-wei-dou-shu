@@ -42,7 +42,7 @@ export default function ChartPage() {
 
   // ── 已起盘：命盘 + 解读 ──
   return (
-    <main style={{ maxWidth: 1360, margin: '0 auto', padding: '24px 16px' }}>
+    <main style={{ maxWidth: 1960, margin: '0 auto', padding: '20px 24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
         <button
           type="button"
@@ -72,8 +72,8 @@ export default function ChartPage() {
         className="chart-layout"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) 380px',
-          gap: 20, marginTop: 8, alignItems: 'stretch',
+          gridTemplateColumns: 'minmax(0, 1120px) minmax(0, 1fr)',
+          gap: 24, marginTop: 8, alignItems: 'stretch',
         }}
       >
         <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
