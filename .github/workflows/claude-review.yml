@@ -1,0 +1,45 @@
+name: Claude Review
+
+# Agent AI (Claude) tự động đọc diff của mỗi Pull Request và để lại nhận xét.
+# Yêu cầu: thêm secret ANTHROPIC_API_KEY trong Settings → Secrets and variables → Actions.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Mỗi PR chỉ chạy 1 lượt review; push mới sẽ hủy lượt cũ để tiết kiệm.
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Luận giải mã nguồn (AI)
+    runs-on: ubuntu-latest
+    # Bỏ qua PR do chính bot/Dependabot tạo để khỏi tốn quota.
+    if: github.actor != 'dependabot[bot]'
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Để trống github_token → action tự dùng token mặc định của workflow.
+          prompt: |
+            Bạn là reviewer cho dự án Next.js (App Router) "Tử Vi Đẩu Số" tiếng Việt.
+            Hãy đọc diff của Pull Request này và để lại nhận xét NGẮN GỌN, bằng TIẾNG VIỆT.
+            Ưu tiên theo thứ tự:
+              1. Lỗi đúng/sai (bug, crash, sai logic tính lá số, rò rỉ state giữa các màn).
+              2. Rò rỉ bảo mật: KHÔNG được commit khóa API/.env; kiểm tra có lộ secret không.
+              3. Không để lọt chữ Hán vào UI (chỉ nút chuyển ngữ "中文" được phép).
+              4. Khả năng tái sử dụng, đơn giản hóa, hiệu năng.
+            Mỗi phát hiện chỉ cho 1-2 câu kèm đường dẫn file:dòng. Nếu không có vấn đề gì đáng kể, nói rõ "LGTM" và liệt kê điểm tốt.
+          claude_args: "--max-turns 20"

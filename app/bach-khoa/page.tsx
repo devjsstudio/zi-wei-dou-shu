@@ -16,20 +16,74 @@ const ELEMENT_ICON: Record<string, string> = {
   'Kim / Hỏa': 'bolt', 'Thủy / Mộc': 'spa',
 };
 
-/** Tranh thiên thể cho sao không có ảnh — chòm sao + icon ngũ hành + tên sao. */
-function StarArt({ name, element, color }: { name: string; element: string; color: string }) {
+/** PRNG tất định (mulberry32) — gieo từ id sao để mỗi sao có bố cục riêng, ổn định giữa các lần render (không lệch hydrate). */
+function seedFrom(str: string): () => number {
+  let h = 1779033703 ^ str.length;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  let a = h >>> 0;
+  return () => {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Tranh thần tinh sinh tạo cho sao không có ảnh tarot — mandala hoàng đạo + chòm sao riêng + ấn ngũ hành + tên sao. */
+function StarArt({ id, name, element, color }: { id: string; name: string; element: string; color: string }) {
   const icon = ELEMENT_ICON[element] || 'auto_awesome';
+  const art = useMemo(() => {
+    const rnd = seedFrom(id);
+    const C = 60; // tâm viewBox 120
+    // Chòm sao riêng: 5-7 điểm, nối thành đường
+    const n = 5 + Math.floor(rnd() * 3);
+    const pts: [number, number][] = [];
+    for (let i = 0; i < n; i++) {
+      const ang = (i / n) * Math.PI * 2 + rnd() * 0.9;
+      const r = 20 + rnd() * 26;
+      pts.push([+(C + Math.cos(ang) * r).toFixed(1), +(C + Math.sin(ang) * r * 0.82).toFixed(1)]);
+    }
+    const poly = pts.map((p) => p.join(',')).join(' ');
+    // Sao nền rải rác
+    const dust = Array.from({ length: 26 }, () => ({
+      x: +(rnd() * 120).toFixed(1), y: +(rnd() * 120).toFixed(1), r: +(0.4 + rnd() * 1.1).toFixed(2), o: +(0.25 + rnd() * 0.5).toFixed(2),
+    }));
+    const spokes = 12; // 12 cung hoàng đạo
+    const rot = +(rnd() * 30).toFixed(1);
+    return { pts, poly, dust, spokes, rot };
+  }, [id]);
+
   return (
-    <div className="w-full h-full relative flex items-center justify-center overflow-hidden" style={{ background: `radial-gradient(ellipse at 50% 28%, ${color}33, #0a0e18 72%)` }}>
-      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.45 }} viewBox="0 0 120 120" preserveAspectRatio="none">
-        <polyline points="18,24 42,40 30,70 64,58 92,34 104,72 72,96" fill="none" stroke={color} strokeWidth="0.6" strokeOpacity="0.5" />
-        {[[18, 24], [42, 40], [30, 70], [64, 58], [92, 34], [104, 72], [72, 96], [50, 20], [100, 100]].map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 1.8 : 1} fill={color} />
+    <div className="w-full h-full relative flex items-center justify-center overflow-hidden" style={{ background: `radial-gradient(ellipse at 50% 32%, ${color}2e, #080b14 74%)` }}>
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 120 120" preserveAspectRatio="xMidYMid slice">
+        {/* Bụi sao nền */}
+        {art.dust.map((d, i) => (
+          <circle key={`d${i}`} cx={d.x} cy={d.y} r={d.r} fill={color} opacity={d.o} />
+        ))}
+        {/* Mandala hoàng đạo */}
+        <g transform={`rotate(${art.rot} 60 60)`} opacity="0.5">
+          <circle cx="60" cy="60" r="40" fill="none" stroke={color} strokeWidth="0.5" strokeOpacity="0.4" />
+          <circle cx="60" cy="60" r="31" fill="none" stroke={color} strokeWidth="0.4" strokeOpacity="0.3" strokeDasharray="1.5 2.5" />
+          {Array.from({ length: art.spokes }, (_, i) => {
+            const a = (i / art.spokes) * Math.PI * 2;
+            return <line key={`s${i}`} x1={60 + Math.cos(a) * 31} y1={60 + Math.sin(a) * 31} x2={60 + Math.cos(a) * 40} y2={60 + Math.sin(a) * 40} stroke={color} strokeWidth="0.5" strokeOpacity="0.5" />;
+          })}
+        </g>
+        {/* Chòm sao riêng của sao */}
+        <polyline points={art.poly} fill="none" stroke={color} strokeWidth="0.7" strokeOpacity="0.75" strokeLinejoin="round" />
+        {art.pts.map(([x, y], i) => (
+          <g key={`p${i}`}>
+            <circle cx={x} cy={y} r={i === 0 ? 2.4 : 1.4} fill={color} />
+            <circle cx={x} cy={y} r={i === 0 ? 4.2 : 2.6} fill="none" stroke={color} strokeWidth="0.4" strokeOpacity="0.5" />
+          </g>
         ))}
       </svg>
       <div className="relative flex flex-col items-center gap-1.5">
-        <span className="material-symbols-outlined" style={{ fontSize: 40, color, filter: `drop-shadow(0 0 10px ${color})`, fontVariationSettings: "'FILL' 1" }}>{icon}</span>
-        <span className="font-headline-sm text-[13px] font-bold tracking-[0.15em] text-center px-2" style={{ color }}>{name.toUpperCase()}</span>
+        <span className="material-symbols-outlined" style={{ fontSize: 44, color, filter: `drop-shadow(0 0 12px ${color})`, fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+        <span className="font-headline-sm text-[13px] font-bold tracking-[0.18em] text-center px-2" style={{ color, textShadow: `0 0 10px ${color}66` }}>{name.toUpperCase()}</span>
       </div>
     </div>
   );
@@ -118,7 +172,7 @@ export default function BachKhoaPage() {
                           /* eslint-disable-next-line @next/next/no-img-element */
                           <img alt={s.name} src={img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         ) : (
-                          <StarArt name={s.name} element={s.element} color={color} />
+                          <StarArt id={s.id} name={s.name} element={s.element} color={color} />
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent" />
                         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between gap-1">
@@ -156,7 +210,7 @@ export default function BachKhoaPage() {
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img alt={sel.name} src={STAR_IMG[sel.id]} className="w-full h-full object-cover" />
                     ) : (
-                      <StarArt name={sel.name} element={sel.element} color={selColor} />
+                      <StarArt id={sel.id} name={sel.name} element={sel.element} color={selColor} />
                     )}
                   </div>
                   <div className="flex items-center justify-between gap-2 mb-1">
