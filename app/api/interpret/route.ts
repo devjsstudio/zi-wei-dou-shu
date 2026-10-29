@@ -7,11 +7,11 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 /**
- * /api/interpret —— 单盘 AI 解读（流式，DeepSeek / OpenAI 兼容）。
+ * /api/interpret —— Luận giải AI cho một lá số (dạng stream, tương thích DeepSeek / OpenAI).
  *
- * API key 来源（任一即可）：
- *   · 请求头 x-ai-key（用户在前端 ⚙ 里填，只存浏览器）
- *   · 环境变量 DEEPSEEK_API_KEY / AI_API_KEY（.env.local）
+ * Nguồn API key (dùng một trong hai):
+ *   · Request header x-ai-key (người dùng điền ở nút ⚙ phía frontend, chỉ lưu trong trình duyệt)
+ *   · Biến môi trường DEEPSEEK_API_KEY / AI_API_KEY (.env.local)
  */
 export async function POST(req: NextRequest) {
   const headerKey = req.headers.get('x-ai-key')?.trim();

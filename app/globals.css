@@ -2,20 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── 2.0 设计系统 Token ─────────────────────────────────── */
+/* ─── 2.0 Token hệ thống thiết kế ───────────────────────── */
 :root {
-  /* 字体（Mystical Oriental Luxury）：正文 Be Vietnam Pro，标题 Noto Serif */
+  /* Font (Mystical Oriental Luxury): nội dung Be Vietnam Pro, tiêu đề Noto Serif */
   --font: 'Be Vietnam Pro', -apple-system, 'PingFang SC', 'Helvetica Neue', 'Segoe UI', sans-serif;
   --font-serif: 'Noto Serif', 'Songti SC', Georgia, 'Times New Roman', serif;
   --font-mono: 'SF Mono', 'Menlo', 'Noto Sans Mono', 'Consolas', monospace;
 
-  /* 背景层级（暖宣纸色系，统一冷暖） */
+  /* Phân lớp nền (tông giấy tuyên ấm) */
   --bg-0: #FBF8F1;
   --bg-1: #F4EEE1;
   --bg-2: #EBE3D2;
   --bg-inv: #141009;
 
-  /* 文字层级（暖墨黑，去冷灰） */
+  /* Phân lớp chữ (mực đen ấm) */
   --tx-0: #1A140A;
   --tx-1: #27201A;
   --tx-2: #574E40;
@@ -23,34 +23,34 @@
   --tx-inv: #F3EEE2;
   --tx-inv2: rgba(243,238,226,0.65);
 
-  /* 唯一强调色：墨金（更醇厚的古金） */
+  /* Màu nhấn duy nhất: kim mực (vàng cổ trầm) */
   --ac:     #AE811C;
   --ac-dim: #87610F;
   --ac-bg:  rgba(174,129,28,0.08);
   --ac-bdr: rgba(174,129,28,0.26);
 
-  /* 四化语义色（仅用于命盘数据，不用于UI装饰） */
+  /* Màu ngữ nghĩa tứ hóa (chỉ dùng cho dữ liệu lá số, không dùng trang trí UI) */
   --lu:   #2D7A4A;
   --quan: #1A56A8;
   --ke:   #8A7018;
   --ji:   #A83228;
 
-  /* 边框（暖褐调，与宣纸底呼应） */
+  /* Viền (tông nâu ấm) */
   --bdr:      rgba(62,46,16,0.10);
   --bdr-med:  rgba(62,46,16,0.16);
   --bdr-heavy:rgba(62,46,16,0.24);
 
-  /* 阴影（暖调投影） */
+  /* Bóng đổ (tông ấm) */
   --sh-xs: 0 1px 2px rgba(62,46,16,0.06);
   --sh-sm: 0 2px 8px rgba(62,46,16,0.07), 0 1px 3px rgba(62,46,16,0.05);
   --sh-md: 0 4px 20px rgba(62,46,16,0.09), 0 2px 6px rgba(62,46,16,0.06);
   --sh-lg: 0 12px 40px rgba(62,46,16,0.12), 0 4px 12px rgba(62,46,16,0.07);
 
-  /* 卡片/内容块背景 */
+  /* Nền thẻ / khối nội dung */
   --bg-card: #FFFDF8;
   --bg-page: #FAF3E3;
 
-  /* 圆角 */
+  /* Bo góc */
   --r-xs:  4px;
   --r-sm:  8px;
   --r-md:  12px;
@@ -58,7 +58,7 @@
   --r-xl:  24px;
   --r-pill:999px;
 
-  /* 命盘组件用的语义色（映射到上面的调色板，自动随明暗主题切换） */
+  /* Màu ngữ nghĩa cho các thành phần lá số (ánh xạ sang bảng màu trên, tự đổi theo sáng/tối) */
   --t-gold:    var(--ac);
   --t-text:    var(--tx-0);
   --t-text1:   var(--tx-1);
@@ -70,35 +70,35 @@
   --t-card:    var(--bg-card);
 }
 
-/* ─── 暗色模式 Token（Mystical Oriental Luxury，取自 Stitch 设计系统） ─── */
+/* ─── Token chế độ tối (Mystical Oriental Luxury, lấy từ hệ thống thiết kế Stitch) ─── */
 [data-theme="dark"] {
-  /* 背景层级：深靛蓝 */
-  --bg-0: #0a0e18;   /* surface-container-lowest，页面最底 */
+  /* Phân lớp nền: chàm đậm */
+  --bg-0: #0a0e18;   /* surface-container-lowest, đáy trang */
   --bg-1: #0f131d;   /* background / surface */
   --bg-2: #1c1f2a;   /* surface-container */
   --bg-inv: #f3eee2;
 
-  /* 文字层级 */
-  --tx-0: #dfe2f1;   /* on-surface，淡紫白 */
+  /* Phân lớp chữ */
+  --tx-0: #dfe2f1;   /* on-surface, trắng tím nhạt */
   --tx-1: #dfe2f1;
-  --tx-2: #d0c5af;   /* on-surface-variant，暖灰 */
-  --tx-3: #99907c;   /* outline，静音文字 */
+  --tx-2: #d0c5af;   /* on-surface-variant, xám ấm */
+  --tx-3: #99907c;   /* outline, chữ mờ */
   --tx-inv: #0f131d;
   --tx-inv2: rgba(15,19,29,0.65);
 
-  /* 强调色：墨金 */
+  /* Màu nhấn: kim mực */
   --ac:     #f2ca50;   /* primary */
-  --ac-dim: #d4af37;   /* primary-container，更沉的金（hover/副标题） */
+  --ac-dim: #d4af37;   /* primary-container, vàng trầm hơn (hover/phụ đề) */
   --ac-bg:  rgba(242,202,80,0.10);
   --ac-bdr: rgba(242,202,80,0.26);
 
-  /* 四化语义色（暗底加亮，取自 Stitch tertiary/secondary/error） */
-  --lu:   #58e7aa;   /* 禄 · 青绿 */
-  --quan: #8fb6ff;   /* 权 · 亮蓝 */
-  --ke:   #e9c349;   /* 科 · 金黄 */
-  --ji:   #ffb4ab;   /* 忌 · 暖红 */
+  /* Màu ngữ nghĩa tứ hóa (nền tối sáng hơn, lấy từ Stitch tertiary/secondary/error) */
+  --lu:   #58e7aa;   /* Lộc · xanh lục */
+  --quan: #8fb6ff;   /* Quyền · xanh dương */
+  --ke:   #e9c349;   /* Khoa · vàng kim */
+  --ji:   #ffb4ab;   /* Kỵ · đỏ ấm */
 
-  /* 边框：暖灰（outline 调） */
+  /* Viền: xám ấm (tông outline) */
   --bdr:      rgba(153,144,124,0.16);
   --bdr-med:  rgba(153,144,124,0.26);
   --bdr-heavy:rgba(153,144,124,0.38);
@@ -108,11 +108,11 @@
   --sh-md: 0 4px 24px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.4);
   --sh-lg: 0 16px 48px rgba(0,0,0,0.65), 0 4px 12px rgba(0,0,0,0.45);
 
-  --bg-card: #1c1f2a;   /* surface-container，实色卡片 */
+  --bg-card: #1c1f2a;   /* surface-container, thẻ màu đặc */
   --bg-page: #0f131d;
 }
 
-/* ─── 全局基础 ───────────────────────────────────────────── */
+/* ─── Nền tảng toàn cục ───────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
@@ -129,7 +129,7 @@ body {
   line-height: 1.6;
 }
 
-/* 标题统一用衬线体 Noto Serif，呼应「玄学典籍」质感 */
+/* Tiêu đề dùng font serif Noto Serif, gợi chất "cổ thư huyền học" */
 h1, h2, h3, .font-serif {
   font-family: var(--font-serif);
 }
@@ -139,7 +139,7 @@ h1, h2, h3, .font-serif {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* Material Symbols 图标字体（Stitch 设计用） */
+/* Font icon Material Symbols (dùng cho thiết kế Stitch) */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -157,20 +157,20 @@ h1, h2, h3, .font-serif {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-/* ─── 滚动条 ─────────────────────────────────────────────── */
+/* ─── Thanh cuộn ──────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-1); }
 ::-webkit-scrollbar-thumb { background: var(--bdr-heavy); border-radius: 3px; }
 
-/* ─── 选中文字 ───────────────────────────────────────────── */
+/* ─── Chữ được chọn ───────────────────────────────────────── */
 ::selection {
   background: rgba(174,129,28,0.16);
   color: var(--ac-dim);
 }
 
-/* ─── 工具类 ─────────────────────────────────────────────── */
+/* ─── Lớp tiện ích ────────────────────────────────────────── */
 
-/* 容器 */
+/* Container */
 .container-page {
   max-width: 1200px;
   margin: 0 auto;
@@ -180,7 +180,7 @@ h1, h2, h3, .font-serif {
   .container-page { padding: 0 16px; }
 }
 
-/* 卡片 */
+/* Thẻ */
 .card {
   background: var(--bg-card);
   border: 1px solid var(--bdr);
@@ -198,13 +198,13 @@ h1, h2, h3, .font-serif {
   border-radius: var(--r-md);
 }
 
-/* 深色区块 */
+/* Khối tối */
 .section-dark {
   background: var(--bg-inv);
   color: var(--tx-inv);
 }
 
-/* 按钮 */
+/* Nút */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -260,7 +260,7 @@ h1, h2, h3, .font-serif {
 }
 .btn-ghost:hover { background: var(--bg-2); }
 
-/* Tab 容器 */
+/* Container tab */
 .tab-container {
   display: inline-flex;
   background: var(--bg-1);
@@ -288,7 +288,7 @@ h1, h2, h3, .font-serif {
   box-shadow: var(--sh-xs);
 }
 
-/* 四化 Badge */
+/* Badge tứ hóa */
 .badge-lu   { color: var(--lu);   background: rgba(45,122,74,0.08);   border: 1px solid rgba(45,122,74,0.20);   }
 .badge-quan { color: var(--quan); background: rgba(26,86,168,0.08);   border: 1px solid rgba(26,86,168,0.20);   }
 .badge-ke   { color: var(--ke);   background: rgba(138,112,24,0.08);  border: 1px solid rgba(138,112,24,0.20);  }
@@ -306,7 +306,7 @@ h1, h2, h3, .font-serif {
   line-height: 1.4;
 }
 
-/* 输入框 */
+/* Ô nhập */
 .input-base {
   width: 100%;
   background: var(--bg-card);
@@ -322,14 +322,14 @@ h1, h2, h3, .font-serif {
 .input-base:focus { border-color: var(--tx-0); }
 .input-base::placeholder { color: var(--tx-3); }
 
-/* 分隔线 */
+/* Đường phân cách */
 .divider {
   width: 100%;
   height: 1px;
   background: var(--bdr);
 }
 
-/* 标签 */
+/* Nhãn */
 .label-section {
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -338,7 +338,7 @@ h1, h2, h3, .font-serif {
   font-weight: 500;
 }
 
-/* 进场动画 */
+/* Hoạt ảnh xuất hiện */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -350,7 +350,7 @@ h1, h2, h3, .font-serif {
 .animate-fade-up { animation: fade-up 0.5s ease forwards; }
 .animate-fade-in { animation: fade-in 0.4s ease forwards; }
 
-/* ─── 渐变文字（3.0 主标题用） ──────────────────────────── */
+/* ─── Chữ gradient (dùng cho tiêu đề chính) ──────────────── */
 .grad-text {
   -webkit-background-clip: text;
   background-clip: text;
@@ -365,7 +365,7 @@ h1, h2, h3, .font-serif {
   background-image: linear-gradient(160deg, #6a4206 0%, #9a6a10 40%, #6a4206 70%, #885010 100%);
 }
 
-/* ─── 命盘工作台响应式 ─────────────────────────────────── */
+/* ─── Responsive cho bàn làm việc lá số ──────────────────── */
 .chart-page-root {
   min-height: 100vh;
   display: flex;
@@ -412,10 +412,10 @@ h1, h2, h3, .font-serif {
 }
 .chart-topbar-back-sep { width: 1px; height: 20px; background: var(--bdr-med); }
 
-/* 手机版 */
+/* Điện thoại */
 @media (max-width: 767px) {
   .chart-page-root {
-    height: auto;        /* 允许全页滚动 */
+    height: auto;        /* cho phép cuộn cả trang */
     min-height: 100vh;
   }
   .chart-workspace {
@@ -454,7 +454,7 @@ h1, h2, h3, .font-serif {
   .chart-topbar button,
   .chart-topbar span { white-space: nowrap; }
 
-  /* 命盘宫格：紧凑 */
+  /* Ô cung lá số: gọn */
   .palace-cell {
     min-height: 74px !important;
     padding: 6px 5px 5px !important;
@@ -466,26 +466,26 @@ h1, h2, h3, .font-serif {
   }
 }
 
-/* 极小屏（<360）进一步收紧 */
+/* Màn rất nhỏ (<360) thu gọn thêm */
 @media (max-width: 359px) {
   .palace-cell { min-height: 68px !important; padding: 5px 4px !important; }
   .chart-workspace-left { padding: 10px 8px 16px; }
   .chart-topbar { padding: 0 8px; gap: 6px; }
 }
 
-/* ─── 打印样式 ───────────────────────────────────────────── */
+/* ─── Kiểu in ─────────────────────────────────────────────── */
 @media print {
   .no-print { display: none !important; }
   body { background: white; color: #1a1a18; }
   @page { margin: 1.2cm; size: A4 landscape; }
 }
 
-/* 原生下拉框（年 / 月 / 日 / 时辰 / 省市）：深色主题下选项列表用实色底。
-   select 本身是半透明底 + 浅色字，Windows 上原生下拉列表是白底，浅灰字配白底看不清（#14） */
+/* Ô chọn gốc (năm / tháng / ngày / giờ / tỉnh thành): ở chế độ tối, danh sách tùy chọn dùng nền màu đặc.
+   Bản thân select là nền bán trong suốt + chữ nhạt; trên Windows danh sách xổ xuống là nền trắng, chữ xám nhạt trên nền trắng khó đọc. */
 [data-theme="dark"] select { color-scheme: dark; }
 [data-theme="dark"] select option { background-color: var(--bg-2); color: var(--tx-1); }
 
-/* 玻璃卡片（解读面板等） */
+/* Thẻ kính (panel luận giải…) */
 .card-glass {
   background: var(--bg-card);
   border: 1px solid var(--bdr);

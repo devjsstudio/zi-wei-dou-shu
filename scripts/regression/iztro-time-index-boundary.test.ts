@@ -4,7 +4,7 @@ import { generateChart } from '../../lib/ziwei/algorithm';
 import { formToBirthInfo } from '../../lib/ziwei/share';
 import { CLOCK_MERIDIAN } from '../../lib/ziwei/cities-vn';
 import type { BirthInfo } from '../../lib/ziwei/types';
-import type { BirthFormState } from '../../components/BirthForm';
+import type { BirthFormState } from '../../lib/ziwei/share';
 
 const EXPECTED_BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 const baseBirthInfo: BirthInfo = {

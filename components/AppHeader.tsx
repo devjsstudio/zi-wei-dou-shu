@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/components/ThemeProvider';
-import { LocaleSwitch, useLocale } from '@/components/LocaleProvider';
+import { useLocale } from '@/components/LocaleProvider';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Solar } from 'lunar-javascript';
 
@@ -82,7 +82,6 @@ export default function AppHeader({ active }: { active: NavKey }) {
             </div>
             <span className="font-label-esoteric text-label-esoteric text-tertiary-fixed-dim">Giờ Hoàng Đạo Cát Tinh</span>
           </div>
-          <LocaleSwitch />
           <ThemeToggle />
         </div>
       </div>

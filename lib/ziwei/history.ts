@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import type { BirthFormState } from '@/components/BirthForm';
+import type { BirthFormState } from './share';
 
 const STORAGE_KEY = 'ziwei_history';
 const MAX_ENTRIES = 10;

@@ -1,5 +1,19 @@
-import type { BirthFormState } from '@/components/BirthForm';
 import type { BirthInfo } from './types';
+
+/** Trạng thái form nhập ngày giờ sinh (kiểu dữ liệu dùng chung). */
+export interface BirthFormState {
+  name: string;
+  year: string;
+  month: string;
+  day: string;
+  clockHour: string;
+  clockMinute: string;
+  unknownTime: boolean;
+  province: string;
+  city: string;
+  longitude: number;
+  gender: 'male' | 'female';
+}
 import { CLOCK_MERIDIAN } from './cities-vn';
 
 /** 根据越南钟表时间（UTC+7）+ 经度计算真太阳时时辰支 (0-11) */

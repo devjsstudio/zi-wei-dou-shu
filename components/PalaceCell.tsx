@@ -12,20 +12,20 @@ interface PalaceCellProps {
   isSelected?: boolean;
   isSanFang?: boolean;
   delay?: number;
-  /** 叠加四化：星名 → 四化类型（'禄'/'权'/'科'/'忌'） */
+  /** Tứ hóa chồng lớp: tên sao → loại tứ hóa (Lộc/Quyền/Khoa/Kỵ) */
   overlayStarSiHua?: Record<string, string>;
-  /** 叠加标签：'年'（流年）或 '限'（大限） */
+  /** Nhãn chồng lớp: 'LN' (lưu niên) hoặc 'ĐH' (đại hạn) */
   overlayLabel?: string;
-  /** 点击叠加四化 badge 回调 */
+  /** Callback khi bấm badge tứ hóa chồng lớp */
   onSiHuaClick?: (starName: string, siHua: string) => void;
 }
 
 /** 14 chính tinh + sao phụ chính → màu ngũ hành (theo thiết kế Stitch) */
-const EL_GOLD = '#F59E0B';   // 土 Thổ
-const EL_GREEN = '#10B981';  // 木 Mộc
-const EL_BLUE = '#38BDF8';   // 水 Thủy
-const EL_WHITE = '#E2E8F0';  // 金 Kim
-const EL_RED = '#F43F5E';    // 火 Hỏa
+const EL_GOLD = '#F59E0B';   // Thổ
+const EL_GREEN = '#10B981';  // Mộc
+const EL_BLUE = '#38BDF8';   // Thủy
+const EL_WHITE = '#E2E8F0';  // Kim
+const EL_RED = '#F43F5E';    // Hỏa
 
 const STAR_COLOR: Record<string, string> = {
   '紫微': EL_GOLD, '天府': EL_GOLD, '天梁': EL_GOLD, '禄存': EL_GOLD, '左辅': EL_GOLD, '右弼': EL_GOLD,
@@ -35,10 +35,10 @@ const STAR_COLOR: Record<string, string> = {
   '太阳': EL_RED, '廉贞': EL_RED,
 };
 
-/** 天干 → màu ngũ hành (0-9 = 甲乙丙丁戊己庚辛壬癸) */
+/** Thiên can → màu ngũ hành (0-9 = Giáp Ất Bính Đinh Mậu Kỷ Canh Tân Nhâm Quý) */
 const STEM_COLOR = [EL_GREEN, EL_GREEN, EL_RED, EL_RED, EL_GOLD, EL_GOLD, EL_WHITE, EL_WHITE, EL_BLUE, EL_BLUE];
 
-/** 7 档亮度 Hán → mã 1 chữ (hiển thị trong ngoặc) */
+/** 7 bậc độ sáng (miếu/vượng/đắc/lợi/bình/bất/hãm) → mã 1 chữ (hiện trong ngoặc) */
 const BRIGHT_CODE: Record<string, string> = {
   '庙': 'M', '旺': 'V', '得': 'Đ', '利': 'L', '平': 'B', '不': 'B', '陷': 'H',
 };
@@ -80,10 +80,8 @@ export default function PalaceCell({
   overlayStarSiHua, overlayLabel, onSiHuaClick,
 }: PalaceCellProps) {
   const { branch, stem, name, stars, daXianAge, isMingGong, isShenGong } = palace;
-  const { m, term, locale } = useLocale();
-  const ganzhi = locale === 'vi'
-    ? `${term(STEMS[stem])} ${term(BRANCHES[branch])}`
-    : `${STEMS[stem]}${BRANCHES[branch]}`;
+  const { m, term } = useLocale();
+  const ganzhi = `${term(STEMS[stem])} ${term(BRANCHES[branch])}`;
 
   const majorStars = stars.filter(s => s.type === 'major');
   const luckyStars = stars.filter(s => s.type === 'lucky');

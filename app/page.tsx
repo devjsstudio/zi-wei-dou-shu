@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AppHeader from '@/components/AppHeader';
-import { useLocale } from '@/components/LocaleProvider';
 import { lunarToSolar } from '@/lib/ziwei/lunar-solar';
 import type { BirthInfo } from '@/lib/ziwei/types';
 
@@ -13,12 +12,10 @@ import type { BirthInfo } from '@/lib/ziwei/types';
  */
 
 const BRANCHES_VI = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
-const BRANCH_HAN = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 const BRANCH_RANGE = ['23–1h', '1–3h', '3–5h', '5–7h', '7–9h', '9–11h', '11–13h', '13–15h', '15–17h', '17–19h', '19–21h', '21–23h'];
 
 export default function HomePage() {
   const router = useRouter();
-  const { tr } = useLocale();
 
   const now = new Date();
   const [name, setName] = useState('');
@@ -38,10 +35,10 @@ export default function HomePage() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     let Y = parseInt(year), M = parseInt(month), D = parseInt(day);
-    if (!Y || !M || !D) { setErr(tr('请填写完整出生日期', 'Vui lòng nhập đủ ngày tháng năm sinh')); return; }
+    if (!Y || !M || !D) { setErr('Vui lòng nhập đủ ngày tháng năm sinh'); return; }
     if (cal === 'lunar') {
       const s = lunarToSolar(Y, M, D, leap);
-      if (!s) { setErr(tr('农历日期无效', 'Ngày âm lịch không hợp lệ')); return; }
+      if (!s) { setErr('Ngày âm lịch không hợp lệ'); return; }
       Y = s.year; M = s.month; D = s.day;
     }
     const info: BirthInfo = { year: Y, month: M, day: D, hour, gender, name: name.trim() || undefined };
@@ -277,7 +274,6 @@ export default function HomePage() {
                         >
                           <span className={hour === i ? 'font-headline-sm text-[15px] font-bold' : 'font-headline-sm text-[15px] text-primary font-bold'}>Giờ {b}</span>
                           <span className={hour === i ? 'font-label-sm text-[10px] text-on-primary-container' : 'font-label-sm text-[10px] text-on-surface-variant'}>{BRANCH_RANGE[i]}</span>
-                          <span className={hour === i ? 'font-label-esoteric text-[9px] text-on-primary-fixed-variant mt-0.5 font-bold' : 'font-label-esoteric text-[9px] text-secondary mt-0.5'}>{BRANCH_HAN[i]}</span>
                         </button>
                       ))}
                     </div>

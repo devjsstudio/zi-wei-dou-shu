@@ -14,12 +14,12 @@ interface TimeNavProps {
   onYearChange: (year: number) => void;
 }
 
-/** 由年份计算天干索引 (0-9) */
+/** Tính chỉ số thiên can (0-9) từ năm */
 export function getYearStemIndex(year: number): number {
   return ((year - 4) % 10 + 10) % 10;
 }
 
-/** 根据天干索引返回四化映射：starName → SiHua */
+/** Trả về ánh xạ tứ hóa theo chỉ số thiên can: starName → SiHua */
 export function buildSiHuaOverlay(stemIndex: number): Record<string, string> {
   const stars = SI_HUA_TABLE[stemIndex];
   if (!stars) return {};
@@ -48,7 +48,7 @@ export default function TimeNav({
   const currentDx = chart.daXians[chart.currentDaXianIndex];
   const { m, term } = useLocale();
 
-  // 计算当前叠加四化信息
+  // Tính thông tin tứ hóa đang chồng lớp
   const getOverlayInfo = (): { stemName: string; overlay: Record<string, string> } | null => {
     if (view === 'mingpan') return null;
 
@@ -77,12 +77,12 @@ export default function TimeNav({
 
   return (
     <div className="mb-3">
-      {/* Tab 行 */}
+      {/* Hàng tab */}
       <div
         className="flex items-center rounded-xl p-1 gap-1"
         style={{ background: 'var(--t-surface)', border: '1px solid var(--t-border)' }}
       >
-        {/* 本命 */}
+        {/* Bản mệnh */}
         <TabButton
           active={view === 'mingpan'}
           onClick={() => onViewChange('mingpan')}
@@ -90,7 +90,7 @@ export default function TimeNav({
           {m.timeNav.natal}
         </TabButton>
 
-        {/* 大限 */}
+        {/* Đại hạn */}
         <TabButton
           active={view === 'daxian'}
           onClick={() => onViewChange('daxian')}
@@ -98,7 +98,7 @@ export default function TimeNav({
           {currentDx ? `${m.timeNav.daxian} ${currentDx.startAge}–${currentDx.endAge}` : m.timeNav.daxian}
         </TabButton>
 
-        {/* 流年 — 含年份切换 */}
+        {/* Lưu niên — kèm chuyển năm */}
         <div
           className="relative flex-1 flex items-center justify-center rounded-lg py-1.5 gap-1 transition-all duration-200"
           style={{
@@ -117,7 +117,7 @@ export default function TimeNav({
           >
             {m.timeNav.liunian}
           </button>
-          {/* 年份 +/- */}
+          {/* Năm +/- */}
           <div className="flex items-center gap-0.5">
             <button
               onClick={e => { e.stopPropagation(); onYearChange(liunianYear - 1); if (view !== 'liunian') onViewChange('liunian'); }}
@@ -144,7 +144,7 @@ export default function TimeNav({
         </div>
       </div>
 
-      {/* 叠加四化说明行 */}
+      {/* Hàng chú thích tứ hóa chồng lớp */}
       {overlayInfo && (
         <motion.div
           initial={{ opacity: 0, y: -4 }}

@@ -19,7 +19,7 @@ const ZHIXING_VI: Record<string, string> = {
   '建': 'Kiến', '除': 'Trừ', '满': 'Mãn', '平': 'Bình', '定': 'Định', '执': 'Chấp',
   '破': 'Phá', '危': 'Nguy', '成': 'Thành', '收': 'Thu', '开': 'Khai', '闭': 'Bế',
 };
-// 建除12神 cát/hung
+// 12 trực (Kiến Trừ…) cát/hung
 const ZHIXING_CAT: Record<string, 'cat' | 'hung' | 'binh'> = {
   '建': 'binh', '除': 'cat', '满': 'cat', '平': 'binh', '定': 'cat', '执': 'binh',
   '破': 'hung', '危': 'hung', '成': 'cat', '收': 'binh', '开': 'cat', '闭': 'hung',

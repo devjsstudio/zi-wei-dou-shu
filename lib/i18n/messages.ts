@@ -1,92 +1,9 @@
-// 界面文案（命盘页相关组件）。zh 为原文，vi 为越南语译文。
-// 术语（星名、宫名、干支等）不在这里，见 ./terms-vi.ts。
+// Văn án giao diện (các thành phần liên quan trang lá số). Chỉ còn tiếng Việt.
+// Thuật ngữ (tên sao, tên cung, can chi…) không đặt ở đây, xem ./terms-vi.ts.
 
-export type Locale = 'zh' | 'vi';
+export type Locale = 'vi';
 
-const zh = {
-  chartPage: {
-    title: '紫微斗数排盘',
-    intro: '输入出生年月日时，开源排盘引擎即时生成命盘。',
-    introNote: '（本页为引擎 Demo，完整商业版界面不在开源范围；排盘内核完全开放。）',
-    restart: '← 重新起盘',
-  },
-  form: {
-    heading: '── 输入生辰八字 ──',
-    name: '姓名（可选）',
-    namePlaceholder: '请输入姓名',
-    birthDate: '出生日期（公历）',
-    year: '年份',
-    month: '月份',
-    day: '日期',
-    monthOption: (m: number) => `${m} 月`,
-    dayOption: (d: number) => `${d} 日`,
-    errYear: '请选择出生年份',
-    errYearRange: '年份范围：1900–2026',
-    errMonth: '请选择月份',
-    errDay: '请选择日期',
-    errNoSuchDay: (m: number, d: number) => `${m}月没有${d}日`,
-    place: '出生地点（越南，用于真太阳时校正）',
-    province: '省 / 直辖市',
-    city: '旧省 / 地区',
-    pickProvinceFirst: '先选省份',
-    pickCity: '（请选择地区）',
-    locationInfo: (lng: string, offset: string) => `经度 ${lng}°E · 时差 ${offset} 分钟`,
-    placeHint: '* 倪海厦批命用真太阳时，建议填写出生地以自动校正时辰',
-    birthTime: '出生时间（越南时间 UTC+7）',
-    hourOption: (h: string) => `${h} 时`,
-    minuteOption: (m: string) => `${m} 分`,
-    trueSolar: '真太阳时 → ',
-    shichen: (branch: string) => `${branch}时`,
-    unknownTime: '不知道出生时间，以子时（23:00–01:00）起盘',
-    unknownTimeShort: '时辰不详',
-    gender: '性别',
-    male: '男',
-    female: '女',
-    summaryDate: (y: number, m: number, d: number) => `${y}年${m}月${d}日`,
-    submitting: '紫微起盘中…',
-    submit: '立即起盘 · 解命运密码',
-  },
-  timeNav: {
-    natal: '本命',
-    daxian: '大限',
-    liunian: '流年',
-    overlayHead: (when: string, stem: string) => `${when}·${stem}年四化：`,
-    huaStar: (star: string, sh: string) => `${star}化${sh}`,
-  },
-  board: {
-    title: '紫微斗数命盘',
-    center: '紫微斗数',
-    mingGong: '命宫',
-    shenGong: '身宫',
-    currentDaxian: '当前大限',
-    ageRange: (a: number, b: number) => `${a}–${b}岁`,
-    leap: '闰',
-    legend: ['化禄', '化权', '化科', '化忌'] as [string, string, string, string],
-    hint: '点击宫位看三方四正',
-    overlayDaxian: '限',
-    overlayLiunian: '年',
-  },
-  palace: {
-    mingTag: '命',
-    shenTag: '身',
-    empty: '空宫',
-  },
-  insight: {
-    topics: { overview: '命格', love: '感情', career: '事业', wealth: '财运', health: '健康', personality: '性格' },
-    loading: '命格解读生成中…',
-    header: '命理解读',
-    placeholder: '继续追问，如：今年适合换工作吗？',
-    send: '追问',
-    apiMissing: '开源版不含 AI 解读接口（/api/interpret），需要你自己实现后才能用，详见 README「快速开始」。排盘本身不需要任何 API Key。',
-    failed: '解读失败，请稍后重试。',
-    settings: 'AI 设置',
-    needKey: '还没有配置 AI 密钥。点右上角 ⚙ 填入你的 Anthropic API Key 即可开始解读（密钥只存在你的浏览器里）。',
-  },
-};
-
-export type Messages = typeof zh;
-
-const vi: Messages = {
+const vi = {
   chartPage: {
     title: 'Lập lá số Tử Vi Đẩu Số',
     intro: 'Nhập ngày giờ sinh, bộ máy an sao mã nguồn mở sẽ lập lá số ngay lập tức.',
@@ -101,31 +18,31 @@ const vi: Messages = {
     year: 'Năm',
     month: 'Tháng',
     day: 'Ngày',
-    monthOption: (m) => `Tháng ${m}`,
-    dayOption: (d) => `Ngày ${d}`,
+    monthOption: (m: number) => `Tháng ${m}`,
+    dayOption: (d: number) => `Ngày ${d}`,
     errYear: 'Vui lòng chọn năm sinh',
     errYearRange: 'Năm hợp lệ: 1900–2026',
     errMonth: 'Vui lòng chọn tháng',
     errDay: 'Vui lòng chọn ngày',
-    errNoSuchDay: (m, d) => `Tháng ${m} không có ngày ${d}`,
+    errNoSuchDay: (m: number, d: number) => `Tháng ${m} không có ngày ${d}`,
     place: 'Nơi sinh (để hiệu chỉnh giờ mặt trời thực)',
     province: 'Tỉnh / thành phố',
     city: 'Tỉnh cũ / khu vực',
     pickProvinceFirst: 'Chọn tỉnh trước',
     pickCity: '(Chọn khu vực)',
-    locationInfo: (lng, offset) => `Kinh độ ${lng}°E · lệch ${offset} phút`,
+    locationInfo: (lng: string, offset: string) => `Kinh độ ${lng}°E · lệch ${offset} phút`,
     placeHint: '* Chọn nơi sinh để tự hiệu chỉnh sang giờ mặt trời thực. Tỉnh theo đơn vị hành chính từ 7/2025; ô thứ hai là các tỉnh cũ đã sáp nhập.',
     birthTime: 'Giờ sinh (giờ Việt Nam, UTC+7)',
-    hourOption: (h) => `${h} giờ`,
-    minuteOption: (m) => `${m} phút`,
+    hourOption: (h: string) => `${h} giờ`,
+    minuteOption: (m: string) => `${m} phút`,
     trueSolar: 'Giờ mặt trời thực → ',
-    shichen: (branch) => `Giờ ${branch}`,
+    shichen: (branch: string) => `Giờ ${branch}`,
     unknownTime: 'Không biết giờ sinh, lập lá số theo giờ Tý (23:00–01:00)',
     unknownTimeShort: 'Không rõ giờ',
     gender: 'Giới tính',
     male: 'Nam',
     female: 'Nữ',
-    summaryDate: (y, m, d) => `${d}/${m}/${y}`,
+    summaryDate: (y: number, m: number, d: number) => `${d}/${m}/${y}`,
     submitting: 'Đang lập lá số…',
     submit: 'Lập lá số ngay',
   },
@@ -133,8 +50,8 @@ const vi: Messages = {
     natal: 'Bản mệnh',
     daxian: 'Đại hạn',
     liunian: 'Lưu niên',
-    overlayHead: (when, stem) => `${when} · Tứ hóa năm ${stem}:`,
-    huaStar: (star, sh) => `${star} hóa ${sh}`,
+    overlayHead: (when: string, stem: string) => `${when} · Tứ hóa năm ${stem}:`,
+    huaStar: (star: string, sh: string) => `${star} hóa ${sh}`,
   },
   board: {
     title: 'Lá số Tử Vi Đẩu Số',
@@ -142,9 +59,9 @@ const vi: Messages = {
     mingGong: 'Cung Mệnh',
     shenGong: 'Cung Thân',
     currentDaxian: 'Đại hạn hiện tại',
-    ageRange: (a, b) => `${a}–${b} tuổi`,
+    ageRange: (a: number, b: number) => `${a}–${b} tuổi`,
     leap: 'nhuận ',
-    legend: ['Hóa Lộc', 'Hóa Quyền', 'Hóa Khoa', 'Hóa Kỵ'],
+    legend: ['Hóa Lộc', 'Hóa Quyền', 'Hóa Khoa', 'Hóa Kỵ'] as [string, string, string, string],
     hint: 'Nhấn vào cung để xem tam phương tứ chính',
     overlayDaxian: 'ĐH',
     overlayLiunian: 'LN',
@@ -167,4 +84,6 @@ const vi: Messages = {
   },
 };
 
-export const MESSAGES: Record<Locale, Messages> = { zh, vi };
+export type Messages = typeof vi;
+
+export const MESSAGES: Record<Locale, Messages> = { vi };
