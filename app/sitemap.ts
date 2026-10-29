@@ -1,6 +1,5 @@
 /**
- * sitemap.xml —— chỉ gồm 5 màn hình theo thiết kế:
- * Trang Chủ, Bảng Lá Số, Sách Luận Giải, Vận Hạn & Lưu Niên, Đại Sư AI & Tủ Lá Số.
+ * sitemap.xml —— các màn hình công khai của ứng dụng.
  */
 
 import type { MetadataRoute } from 'next';
@@ -8,13 +7,18 @@ import { SITE_URL } from '@/lib/site';
 
 const BASE_URL = SITE_URL;
 
+const PATHS = [
+  '', '/chart', '/luan-giai', '/van-han', '/dai-su-ai',
+  '/hop-duyen', '/van-khi', '/phong-thuy', '/bach-khoa', '/chia-se',
+  '/trach-nhat', '/dinh-gio',
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastmod = new Date();
-  return [
-    { url: BASE_URL, priority: 1.0, changeFrequency: 'weekly', lastModified: lastmod },
-    { url: `${BASE_URL}/chart`, priority: 0.95, changeFrequency: 'weekly', lastModified: lastmod },
-    { url: `${BASE_URL}/luan-giai`, priority: 0.9, changeFrequency: 'weekly', lastModified: lastmod },
-    { url: `${BASE_URL}/van-han`, priority: 0.9, changeFrequency: 'weekly', lastModified: lastmod },
-    { url: `${BASE_URL}/dai-su-ai`, priority: 0.9, changeFrequency: 'weekly', lastModified: lastmod },
-  ];
+  return PATHS.map((p, i) => ({
+    url: `${BASE_URL}${p}`,
+    priority: i === 0 ? 1.0 : 0.9,
+    changeFrequency: 'weekly' as const,
+    lastModified: lastmod,
+  }));
 }
