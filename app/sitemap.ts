@@ -10,7 +10,7 @@ const BASE_URL = SITE_URL;
 const PATHS = [
   '', '/chart', '/luan-giai', '/van-han', '/dai-su-ai',
   '/hop-duyen', '/van-khi', '/phong-thuy', '/bach-khoa', '/chia-se',
-  '/trach-nhat', '/dinh-gio',
+  '/trach-nhat', '/dinh-gio', '/gia-pha', '/gieo-que', '/su-nghiep', '/am-nhac',
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

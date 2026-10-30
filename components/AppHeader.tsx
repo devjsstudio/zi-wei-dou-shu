@@ -28,10 +28,10 @@ const NAV: { key: NavKey; label: string; href: string }[] = [
 const PHAP_KHI: { key: NavKey; label: string; href: string; icon: string; desc: string; ready?: boolean }[] = [
   { key: 'trach-nhat', label: 'Trạch Nhật Cát Thời', href: '/trach-nhat', icon: 'event_available', desc: 'Chọn ngày hoàng đạo khởi sự', ready: true },
   { key: 'dinh-gio', label: 'Trắc Nghiệm Định Giờ Sinh', href: '/dinh-gio', icon: 'schedule', desc: 'Khảo đính giờ sinh chính xác', ready: true },
-  { key: 'gia-pha', label: 'Mạch Vận Gia Phả', href: '/gia-pha', icon: 'account_tree', desc: 'Vận khí ngũ hành dòng tộc' },
-  { key: 'gieo-que', label: 'Gieo Quẻ Kinh Dịch', href: '/gieo-que', icon: 'casino', desc: 'Lục hào vấn sự linh ứng' },
-  { key: 'su-nghiep', label: 'La Bàn Sự Nghiệp', href: '/su-nghiep', icon: 'explore', desc: 'Ma trận sự nghiệp & dụng thần' },
-  { key: 'am-nhac', label: 'Âm Nhạc & Đặt Lịch Đại Sư', href: '/am-nhac', icon: 'graphic_eq', desc: 'Nhạc thiền ngũ âm · đặt lịch' },
+  { key: 'gia-pha', label: 'Mạch Vận Gia Phả', href: '/gia-pha', icon: 'account_tree', desc: 'Vận khí ngũ hành dòng tộc', ready: true },
+  { key: 'gieo-que', label: 'Gieo Quẻ Kinh Dịch', href: '/gieo-que', icon: 'casino', desc: 'Lục hào vấn sự linh ứng', ready: true },
+  { key: 'su-nghiep', label: 'La Bàn Sự Nghiệp', href: '/su-nghiep', icon: 'explore', desc: 'Ma trận sự nghiệp & dụng thần', ready: true },
+  { key: 'am-nhac', label: 'Âm Nhạc & Đặt Lịch Đại Sư', href: '/am-nhac', icon: 'graphic_eq', desc: 'Nhạc thiền ngũ âm · đặt lịch', ready: true },
 ];
 const PHAP_KHI_KEYS = PHAP_KHI.map((p) => p.key);
 
